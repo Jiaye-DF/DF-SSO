@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DF-SSO 專案說明文件（架構 · 技術亮點 · 操作手冊）</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DF-SSO 企業統一登入系統 — 專案說明文件</title>
 <style>
   :root {
     --blue: #2563eb;
@@ -13,10 +13,16 @@
     --border: #e5e7eb;
     --text: #1f2937;
     --muted: #6b7280;
-    --green-bg: #ecfdf5; --green: #047857;
-    --amber-bg: #fffbeb; --amber: #b45309;
-    --red-bg: #fef2f2; --red: #b91c1c;
-    --todo-bg: #fff7cc; --todo-border: #f0c000;
+    --code-bg: #f3f4f6;
+    --green-bg: #ecfdf5;
+    --green-border: #6ee7b7;
+    --green: #047857;
+    --amber-bg: #fffbeb;
+    --amber-border: #fcd34d;
+    --amber: #b45309;
+    --red-bg: #fef2f2;
+    --red-border: #fecaca;
+    --red: #b91c1c;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -28,127 +34,163 @@
     line-height: 1.7;
     font-size: 16px;
   }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
+  code, pre, .mono { font-family: "Cascadia Code", "SFMono-Regular", Consolas, Menlo, monospace; }
 
+  /* 英雄區 */
   header.hero {
     background: linear-gradient(135deg, #1e3a8a, #2563eb);
     color: #fff;
-    padding: 48px 24px 40px;
+    padding: 52px 24px 44px;
     text-align: center;
   }
-  header.hero h1 { margin: 0 0 8px; font-size: 32px; }
-  header.hero p { margin: 4px 0; opacity: .92; font-size: 15px; }
-  .badge-row { margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-  .badge { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
-           padding: 4px 12px; border-radius: 999px; font-size: 13px; }
+  header.hero .kicker { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; opacity: .85; font-weight: 600; }
+  header.hero h1 { margin: 10px 0 10px; font-size: 32px; line-height: 1.3; }
+  header.hero p.lead { margin: 0 auto; max-width: 720px; opacity: .92; font-size: 15.5px; }
+  .badge-row { margin-top: 18px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .hbadge {
+    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
+    padding: 4px 12px; border-radius: 999px; font-size: 13px; color: #fff;
+  }
 
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* 目錄 — 兩欄卡片式導覽 */
   nav.toc {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    padding: 20px 24px; margin: 28px 0; box-shadow: 0 1px 3px rgba(0,0,0,.05);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 24px 24px 26px; margin: 30px 0; box-shadow: 0 1px 3px rgba(0,0,0,.05);
   }
-  nav.toc h2 { margin: 0 0 12px; font-size: 16px; color: var(--muted); letter-spacing: .04em; }
-  nav.toc .toc-part { font-size: 13px; font-weight: 700; color: var(--blue); margin: 10px 0 4px; letter-spacing: .03em; }
-  nav.toc ol { margin: 0; padding-left: 20px; }
-  nav.toc li { margin: 5px 0; break-inside: avoid; }
-  nav.toc a { color: var(--blue); text-decoration: none; }
-  nav.toc a:hover { text-decoration: underline; }
-  .toc-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+  nav.toc .toc-title { font-size: 13px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; font-weight: 700; margin: 0 0 16px; }
+  .toc-section-label { font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: .04em; margin: 18px 0 10px; }
+  .toc-section-label:first-of-type { margin-top: 4px; }
+  .toc-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 700px) { .toc-grid { grid-template-columns: 1fr 1fr; } }
+  a.toc-item {
+    display: flex; align-items: flex-start; gap: 14px; text-decoration: none; color: inherit;
+    border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+    background: var(--surface); transition: border-color .15s, box-shadow .15s, transform .15s;
+  }
+  a.toc-item:hover { border-color: var(--blue); box-shadow: 0 4px 14px rgba(37,99,235,.12); transform: translateY(-1px); }
+  a.toc-item .n {
+    flex: none; width: 32px; height: 32px; border-radius: 9px; background: #eff6ff; color: var(--blue);
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px;
+  }
+  a.toc-item .tx { display: flex; flex-direction: column; }
+  a.toc-item .tx .tt { font-weight: 700; font-size: 15px; color: #0f172a; }
+  a.toc-item .tx .ds { color: var(--muted); font-size: 13px; margin-top: 3px; }
 
+  /* 區塊卡片化 */
   section {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    padding: 8px 28px 24px; margin: 22px 0; box-shadow: 0 1px 3px rgba(0,0,0,.04);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 6px 30px 28px; margin: 22px 0; box-shadow: 0 1px 3px rgba(0,0,0,.04); scroll-margin-top: 16px;
   }
-  h2.sec { font-size: 22px; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-top: 24px; }
-  h3 { font-size: 18px; margin-top: 28px; color: #111827; }
-  h4 { font-size: 16px; margin-top: 18px; color: #111827; }
-  p, li { font-size: 15.5px; }
-  a { color: var(--blue); }
-  code {
-    background: #f1f5f9; color: #0f172a; padding: 1px 6px; border-radius: 5px;
-    font-family: "Cascadia Code", Consolas, monospace; font-size: 13.5px;
-  }
-  pre {
-    background: #0f172a; color: #e2e8f0; padding: 14px 16px; border-radius: 10px;
-    overflow-x: auto; font-size: 13.5px; line-height: 1.6;
-  }
-  pre code { background: none; color: inherit; padding: 0; }
+  h2.sec { font-size: 22px; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin: 26px 0 4px; display: flex; align-items: center; gap: 12px; }
+  h2.sec .num { flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--blue); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; }
+  p.sectlead { color: var(--muted); margin: 14px 0 18px; }
+  h3 { font-size: 17px; margin: 28px 0 12px; color: #111827; }
+  h4 { font-size: 15px; margin: 18px 0 8px; color: #111827; }
+  p, ul, ol { margin: 0 0 12px; }
+  p:last-child, ul:last-child, ol:last-child { margin-bottom: 0; }
+  ul { padding-left: 22px; }
+  li { margin: 5px 0; }
+  strong { font-weight: 700; color: #0f172a; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13.5px; }
+  /* 文字重點層級 */
+  .hl { color: var(--blue-dark); font-weight: 700; }
+  .mk { background: linear-gradient(transparent 58%, #bfdbfe 58%); font-weight: 700; padding: 0 1px; }
+  .em { font-size: 17px; font-weight: 700; color: #0f172a; }
+  .key { color: var(--amber); font-weight: 700; }
+  .rd { color: var(--red); font-weight: 700; }
+  .lead-line { font-size: 16.5px; }
 
-  /* mermaid diagrams render to SVG — keep them light, not the dark code style */
-  figure.diagram { margin: 20px 0; }
-  pre.mermaid {
-    background: #fff; color: var(--text);
-    border: 1px solid var(--border); border-radius: 12px;
-    padding: 18px; text-align: center; overflow-x: auto;
-    font-size: 13px; line-height: 1.5;
-  }
-  figure.diagram figcaption {
-    text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px;
-  }
+  /* 成效指標卡 */
+  .metrics { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
+  @media (min-width: 760px) { .metrics { grid-template-columns: repeat(4, 1fr); } }
+  .metric { border: 1px solid var(--border); border-radius: 14px; padding: 18px 16px; text-align: center; background: linear-gradient(180deg, #f8fbff, #ffffff); }
+  .metric .big { font-size: 28px; font-weight: 800; color: var(--blue-dark); line-height: 1.2; }
+  .metric .big small { font-size: 15px; font-weight: 700; }
+  .metric .ml { font-weight: 700; font-size: 14px; margin-top: 6px; }
+  .metric .ms { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+  code { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; font-size: 13.5px; }
 
-  .part-divider {
-    margin: 44px 0 6px; padding: 14px 22px; border-radius: 14px;
-    background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #fff;
-  }
-  .part-divider .kicker { font-size: 12px; letter-spacing: .14em; opacity: .8; text-transform: uppercase; }
-  .part-divider h2 { margin: 4px 0 2px; font-size: 24px; border: none; }
-  .part-divider p { margin: 0; font-size: 14px; opacity: .9; }
+  /* inline badge */
+  .badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 11px; font-size: 12.5px; font-weight: 700; background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe; }
+  .badge.green { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+  .badge.amber { background: var(--amber-bg); color: var(--amber); border-color: var(--amber-border); }
+  .badge.red { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
+  .badge.gray { background: var(--code-bg); color: var(--muted); border-color: var(--border); }
 
-  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14.5px; }
-  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
-  th { background: #f3f4f6; font-weight: 600; }
-  tr:nth-child(even) td { background: #fafafa; }
+  /* grid + subcard */
+  .grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .grid.cols2 { grid-template-columns: repeat(2, 1fr); } .grid.cols3 { grid-template-columns: repeat(3, 1fr); } }
+  .subcard { border: 1px solid var(--border); border-radius: 12px; padding: 18px; background: var(--surface); }
+  .subcard h4 { margin: 0 0 8px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .subcard .ico { width: 28px; height: 28px; flex: none; border-radius: 8px; background: #eff6ff; color: var(--blue); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; }
+  .subcard p { margin: 0; font-size: 14px; color: var(--muted); }
+  .subcard ul { margin: 0; padding-left: 18px; }
+  .subcard li { font-size: 13.5px; }
+  .subcard .label { color: var(--muted); font-size: 12.5px; margin: 8px 0 6px; font-weight: 600; }
 
-  ol.steps { counter-reset: step; list-style: none; padding-left: 0; }
-  ol.steps > li {
-    position: relative; padding: 4px 0 4px 44px; margin: 8px 0;
-  }
-  ol.steps > li::before {
-    counter-increment: step; content: counter(step);
-    position: absolute; left: 0; top: 2px;
-    width: 28px; height: 28px; background: var(--blue); color: #fff;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 700;
-  }
+  /* 表格 */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin: 6px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  thead th { background: var(--code-bg); color: var(--muted); font-weight: 700; white-space: nowrap; }
+  tbody tr:nth-child(even) { background: #fafbfc; }
+  tbody tr:last-child td { border-bottom: none; }
+  td code { background: var(--code-bg); }
 
-  .note { border-left: 4px solid; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; }
+  /* code block */
+  .codeblock { border: 1px solid var(--border); border-radius: 12px; background: #0f172a; overflow: hidden; margin: 6px 0; }
+  .codeblock .lang { padding: 7px 14px; font-size: 12.5px; color: #94a3b8; border-bottom: 1px solid #1e293b; }
+  .codeblock pre { margin: 0; padding: 14px; overflow-x: auto; }
+  .codeblock pre code { font-size: 13px; line-height: 1.6; white-space: pre; color: #e2e8f0; background: none; border: none; padding: 0; }
+
+  /* note 提示框 */
+  .note { border-left: 4px solid; padding: 14px 18px; border-radius: 0 10px 10px 0; margin: 16px 0; font-size: 14.5px; }
   .note.info { background: #eff6ff; border-color: var(--blue); }
+  .note.tip { background: var(--green-bg); border-color: var(--green); }
   .note.warn { background: var(--amber-bg); border-color: var(--amber); }
   .note.danger { background: var(--red-bg); border-color: var(--red); }
-  .note.tip { background: var(--green-bg); border-color: var(--green); }
-  .note strong { display: inline; }
+  .note .head { font-weight: 700; margin-bottom: 4px; }
 
-  .todo {
-    background: var(--todo-bg); border: 1px dashed var(--todo-border);
-    color: #7a5c00; padding: 1px 8px; border-radius: 5px; font-weight: 600; font-size: 14px;
+  /* 分層架構 */
+  .layer { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+  .layer + .layer { margin-top: 14px; }
+  .layer .lh { background: var(--code-bg); padding: 10px 16px; font-weight: 700; font-size: 13.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .layer .lb { padding: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 13px; background: var(--surface); }
+  .chip b { font-weight: 700; }
+
+  /* 步驟（編號方塊，沿用導覽數字晶片風格） */
+  ol.steps { counter-reset: step; list-style: none; padding-left: 0; margin: 12px 0; }
+  ol.steps > li { position: relative; padding: 2px 0 2px 40px; margin: 9px 0; }
+  ol.steps > li::before {
+    counter-increment: step; content: counter(step);
+    position: absolute; left: 0; top: 1px;
+    width: 26px; height: 26px; background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;
   }
 
-  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 13px; font-weight: 600; }
-  .pill.green { background: var(--green-bg); color: var(--green); }
-  .pill.amber { background: var(--amber-bg); color: var(--amber); }
-  .pill.red { background: var(--red-bg); color: var(--red); }
-
-  .stack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0; }
-  .stack-card { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: #fbfdff; }
-  .stack-card h4 { margin: 0 0 6px; font-size: 14px; color: var(--blue-dark); }
-  .stack-card ul { margin: 0; padding-left: 18px; }
-  .stack-card li { font-size: 13.5px; margin: 3px 0; }
-
-  .checklist { list-style: none; padding-left: 0; }
-  .checklist li { padding: 6px 0 6px 30px; position: relative; }
-  .checklist li::before {
-    content: "☐"; position: absolute; left: 0; top: 2px; font-size: 18px; color: var(--blue);
-  }
-
-  .playbook-head {
-    background: linear-gradient(90deg, #eff6ff, transparent);
-    border-left: 5px solid var(--blue); padding: 10px 16px; border-radius: 0 10px 10px 0;
-    margin-top: 32px;
-  }
+  /* Playbook 標頭 */
+  .playbook-head { background: linear-gradient(90deg, #eff6ff, transparent); border-left: 5px solid var(--blue); padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 28px 0 12px; }
   .playbook-head h3 { margin: 0; }
 
-  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 40px; }
+  /* 待補標記 */
+  .todo { background: #fff7cc; border: 1px dashed #f0c000; color: #7a5c00; padding: 1px 8px; border-radius: 5px; font-weight: 600; font-size: 13px; }
 
-  .toplink { display:block; text-align:right; font-size:13px; margin-top:4px; }
+  /* Part 分隔 */
+  .part-divider { margin: 36px 0 6px; padding: 16px 22px; border-radius: 16px; background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #fff; }
+  .part-divider .pk { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .8; font-weight: 600; }
+  .part-divider h2 { margin: 4px 0 2px; font-size: 22px; border: none; display: block; }
+  .part-divider p { margin: 0; font-size: 14px; opacity: .9; }
+
+  /* 流程圖（Mermaid，保留不變的 §7.1.1） */
+  figure.diagram { margin: 10px 0 4px; }
+  pre.mermaid { background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; overflow-x: auto; font-size: 13px; line-height: 1.5; }
+  figure.diagram figcaption { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+  footer.page { text-align: center; color: var(--muted); font-size: 13px; padding: 8px 24px 0; }
 
   @media print {
     body { background: #fff; font-size: 12px; }
@@ -157,184 +199,227 @@
     .part-divider { -webkit-print-color-adjust: exact; print-color-adjust: exact; break-inside: avoid; }
     figure.diagram, pre.mermaid { break-inside: avoid; }
     a { color: #1d4ed8; }
-    .no-print { display: none; }
-  }
-  @media (max-width: 640px) {
-    .toc-cols { grid-template-columns: 1fr; }
-    .wrap { padding: 0 14px 60px; }
   }
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <h1>DF-SSO 專案說明文件</h1>
-  <p>大豐環保企業統一 SSO 系統 — 架構 · 技術亮點 · 維運手冊</p>
-  <p style="font-size:13px;">Part I：系統架構與技術設計　·　Part II：情境式維運操作手冊</p>
-  <div class="badge-row">
-    <span class="badge">系統架構</span>
-    <span class="badge">OAuth2 流程</span>
-    <span class="badge">技術亮點</span>
-    <span class="badge">維運 Runbook</span>
-    <span class="badge">故障排除</span>
-  </div>
-</header>
-
-<div class="wrap">
-
-  <nav class="toc no-print">
-    <h2>目錄</h2>
-    <div class="toc-cols">
-      <div>
-        <div class="toc-part">Part I · 系統與技術設計</div>
-        <ol>
-          <li><a href="#s1">專案摘要</a></li>
-          <li><a href="#s2">系統架構</a></li>
-          <li><a href="#s3">SSO 完整 OAuth2 登入流程</a></li>
-          <li><a href="#s4">技術亮點與工程決策</a></li>
-        </ol>
-      </div>
-      <div>
-        <div class="toc-part">Part II · 維運操作手冊</div>
-        <ol start="5">
-          <li><a href="#s5">線上環境一覽</a></li>
-          <li><a href="#s6">第一次接手：登入後台</a></li>
-          <li><a href="#s7">後台四個分頁導覽</a></li>
-          <li><a href="#s8">核心觀念（5 件事）</a></li>
-          <li><a href="#s9">常見需求 Playbook A–E</a></li>
-          <li><a href="#s10">維運操作（跑指令）</a></li>
-          <li><a href="#s11">故障排除 Runbook</a></li>
-          <li><a href="#s12">已知風險與待辦</a></li>
-          <li><a href="#s13">延伸閱讀</a></li>
-        </ol>
-      </div>
+  <header class="hero">
+    <div class="kicker">企業內部平台 · 專案說明文件</div>
+    <h1>DF-SSO 企業統一登入系統<br>OAuth2 SSO Authorization Server</h1>
+    <p class="lead">大豐環保企業統一登入（Single Sign-On）中央系統：所有內部系統共用同一組 Microsoft（Azure AD）公司帳號，登入一次通行所有已接入系統。後端以 OAuth2 收斂身分驗證、session 治理、跨 App 自動登入與安全限流。本文件涵蓋系統摘要、架構、登入流程、技術亮點與維運操作手冊。</p>
+    <div class="badge-row">
+      <span class="hbadge">Express · Node.js</span>
+      <span class="hbadge">Next.js · TypeScript</span>
+      <span class="hbadge">PostgreSQL</span>
+      <span class="hbadge">Redis</span>
+      <span class="hbadge">Microsoft Azure AD</span>
+      <span class="hbadge">Docker / Coolify</span>
     </div>
-  </nav>
+  </header>
 
-  <div class="note tip">
-    <strong>這份文件的兩個用途：</strong>① 讓接手的人不用讀完所有程式碼，就能處理日常 SSO 維運需求；② 完整呈現本系統的架構與工程設計。
-    標記 <span class="todo">🔲 待補（口述）</span> 的地方是程式碼裡看不到、需要前手補充的資訊（帳號、位置、聯絡人等），請交接時口頭補上。
-  </div>
+  <div class="wrap">
 
-  <!-- ========================================================= -->
-  <!--  PART I — 系統與技術設計                                   -->
-  <!-- ========================================================= -->
-  <div class="part-divider">
-    <div class="kicker">Part I</div>
-    <h2>系統與技術設計</h2>
-    <p>這個系統解決什麼問題、長什麼樣子、登入怎麼跑、做了哪些工程決策。</p>
-  </div>
-
-  <!-- ============ 1 ============ -->
-  <section id="s1">
-    <h2 class="sec">1. 專案摘要</h2>
-
-    <p>
-      <strong>DF-SSO 是大豐環保的「企業統一登入（Single Sign-On）」中央系統。</strong>
-      它解決一個很實際的問題：公司內部系統愈來愈多（CRM、ERP、各式後台），如果每套系統各做一份登入、各管一份帳號密碼，使用者要記很多組密碼、IT 要重複維護很多套登入機制，安全性也難統一控管。
-      DF-SSO 把「登入」這件事集中到一個地方 —— 所有系統都導來這裡，使用者用<strong>同一組 Microsoft（Azure AD）公司帳號登入一次，就能通行所有已接入的系統</strong>，不必重複登入、不必各記密碼。
-    </p>
-
-    <h4>它替公司做到什麼</h4>
-    <ul>
-      <li><strong>一次登入、到處通用</strong>：員工登入一個系統後，切換到其他已接入系統免再登入。</li>
-      <li><strong>帳號集中、共用公司身分</strong>：直接沿用 Microsoft 公司帳號，員工到職 / 離職由 AD 統一控管，不必在每套系統各開各關帳號。</li>
-      <li><strong>安全集中控管</strong>：登入紀錄、授權範圍、防暴力登入（Rate Limit）等都在中央一處管理。</li>
-      <li><strong>新系統接入快</strong>：要接 SSO 的系統只需向中央申請一組憑證（<code>app_id</code> / <code>app_secret</code>），照整合文件接四個端點即可，不用自己重做登入。</li>
-    </ul>
-
-    <h4>系統由哪些部分組成</h4>
-    <ul>
-      <li><strong>登入中央（後端）</strong>：負責跟 Microsoft 驗證、發憑證、管理登入狀態，是各系統之間溝通的核心。</li>
-      <li><strong>管理後台（網頁）</strong>：管理員登入操作的地方，可新增 / 停用要接入的系統、查誰在什麼時候登入、管理後台管理員、調整安全參數。<strong>本手冊大部分操作都在這裡進行。</strong></li>
-      <li><strong>身分來源</strong>：Microsoft Azure AD（公司帳號）；登入時另會向 ERP 取員工資料（員編、部門等）。</li>
-    </ul>
-
-    <h4>誰在用</h4>
-    <p>所有接入 SSO 的內部系統，以及它們背後的使用者（公司員工）。日常會用到這份手冊的人，是<strong>負責維運 SSO 的 IT 人員 / 接手者</strong>。</p>
-
-    <h4>目前狀態</h4>
-    <ul>
-      <li>正式（Prod）與測試（Test）<strong>兩套環境各自獨立運作中</strong>，資料庫與憑證完全隔離、不共用。</li>
-      <li>部署在 Coolify（Docker Compose）平台上。</li>
-      <li>日常維運工作集中在兩類：<strong>① 幫新系統接入（發憑證）</strong>、<strong>② 處理「登不進去」的問題（查登入紀錄定位）</strong>。這兩類的操作步驟見第 9 節 Playbook。</li>
-    </ul>
-
-    <div class="note warn">
-      <strong>接手者最該先知道的三件事：</strong>
-      ① Azure AD 的 client secret <strong>會過期，過期將導致全公司登入中斷</strong> —— 務必先確認到期日與負責續期的人；
-      ② <strong>Prod 的資料庫操作不可逆</strong>，誤跑會資料全毀（見第 10 節紅線）；
-      ③ 其餘風險與待補的營運資訊見「已知風險與待辦」一節。
-    </div>
-  </section>
-
-  <!-- ============ 2 ============ -->
-  <section id="s2">
-    <h2 class="sec">2. 系統架構</h2>
-    <p>DF-SSO 是一個獨立的 <strong>OAuth2 Authorization Server</strong>，前後端分離，搭配 PostgreSQL（持久資料）與 Redis（登入狀態），對外接 Microsoft Azure AD 與 ERP API。所有接入應用（Client App）只跟「中央」對話，不直接碰 Microsoft。</p>
-
-    <h4>技術棧</h4>
-    <div class="stack-grid">
-      <div class="stack-card">
-        <h4>後端</h4>
-        <ul>
-          <li>Node.js · Express</li>
-          <li>OAuth2 Authorization Code Flow</li>
-          <li>JWT（HS256）+ Redis Session</li>
-          <li>node-pg-migrate（雙目錄）</li>
-        </ul>
+    <!-- 目錄 -->
+    <nav class="toc">
+      <p class="toc-title">內容導覽</p>
+      <div class="toc-section-label">PART I · 系統與技術設計</div>
+      <div class="toc-grid">
+        <a class="toc-item" href="#summary"><span class="n">1</span><span class="tx"><span class="tt">專案摘要</span><span class="ds">一句話定位與三大能力</span></span></a>
+        <a class="toc-item" href="#problem"><span class="n">2</span><span class="tx"><span class="tt">解決的問題與效益</span><span class="ds">痛點對照 + 量化成效</span></span></a>
+        <a class="toc-item" href="#arch"><span class="n">3</span><span class="tx"><span class="tt">系統架構</span><span class="ds">四層分層與技術棧</span></span></a>
+        <a class="toc-item" href="#flow"><span class="n">4</span><span class="tx"><span class="tt">SSO 完整 OAuth2 登入流程</span><span class="ds">§7.1.1 Authorization Code Flow</span></span></a>
+        <a class="toc-item" href="#highlights"><span class="n">5</span><span class="tx"><span class="tt">技術亮點與工程決策</span><span class="ds">安全原語 · 單一事實來源</span></span></a>
       </div>
-      <div class="stack-card">
-        <h4>前端</h4>
-        <ul>
-          <li>Next.js（App Router）</li>
-          <li>單頁 Tab Dashboard</li>
-          <li>cookie-based（<code>credentials: include</code>）</li>
-        </ul>
+      <div class="toc-section-label">PART II · 維運操作手冊</div>
+      <div class="toc-grid">
+        <a class="toc-item" href="#env"><span class="n">6</span><span class="tx"><span class="tt">線上環境一覽</span><span class="ds">Prod / Test / Dev 網址</span></span></a>
+        <a class="toc-item" href="#login"><span class="n">7</span><span class="tx"><span class="tt">第一次接手：登入後台</span><span class="ds">三層管理員驗證</span></span></a>
+        <a class="toc-item" href="#tabs"><span class="n">8</span><span class="tx"><span class="tt">後台四個分頁導覽</span><span class="ds">白名單 / 紀錄 / 管理員 / 設定</span></span></a>
+        <a class="toc-item" href="#concept"><span class="n">9</span><span class="tx"><span class="tt">核心觀念（5 件事）</span><span class="ds">處理需求前必懂</span></span></a>
+        <a class="toc-item" href="#playbook"><span class="n">10</span><span class="tx"><span class="tt">常見需求 Playbook A–E</span><span class="ds">照著點的情境流程</span></span></a>
+        <a class="toc-item" href="#ops"><span class="n">11</span><span class="tx"><span class="tt">維運操作（跑指令）</span><span class="ds">部署 / migration 紅線</span></span></a>
+        <a class="toc-item" href="#runbook"><span class="n">12</span><span class="tx"><span class="tt">故障排除 Runbook</span><span class="ds">症狀 → 原因 → 檢查</span></span></a>
+        <a class="toc-item" href="#risk"><span class="n">13</span><span class="tx"><span class="tt">已知風險與待辦</span><span class="ds">交接需口述補上</span></span></a>
+        <a class="toc-item" href="#refs"><span class="n">14</span><span class="tx"><span class="tt">延伸閱讀</span><span class="ds">Design / INTEGRATION / CLAUDE</span></span></a>
       </div>
-      <div class="stack-card">
-        <h4>資料 / 狀態</h4>
-        <ul>
-          <li>PostgreSQL — 白名單 / log / 管理員</li>
-          <li>Redis — session + 一次性 auth code</li>
-        </ul>
-      </div>
-      <div class="stack-card">
-        <h4>外部整合</h4>
-        <ul>
-          <li>Microsoft Azure AD（MSAL）</li>
-          <li>ERP API（員工資料）</li>
-        </ul>
-      </div>
-      <div class="stack-card">
-        <h4>部署 / 維運</h4>
-        <ul>
-          <li>Coolify · Docker Compose</li>
-          <li>Prod / Test 雙獨立 stack</li>
-          <li>Helmet / CORS 動態白名單 / Rate Limit</li>
-        </ul>
-      </div>
-      <div class="stack-card">
-        <h4>安全</h4>
-        <ul>
-          <li><code>timingSafeEqual</code> 常數時間比對</li>
-          <li>Redis Lua 原子 GET+DEL</li>
-          <li>HMAC-SHA256 back-channel</li>
-        </ul>
-      </div>
+    </nav>
+
+    <div class="note tip">
+      <div class="head">這份文件的兩個用途</div>
+      ① 讓接手的人不用讀完所有程式碼，就能處理日常 SSO 維運需求；② 完整呈現本系統的架構與工程設計。標記 <span class="todo">🔲 待補（口述）</span> 的地方是程式碼裡看不到、需要前手補充的資訊（帳號、位置、聯絡人等），請交接時口頭補上。
     </div>
 
-    <div class="note info">
-      <strong>環境隔離：</strong>Prod 與 Test 是兩套獨立的 Coolify stack，PostgreSQL / Redis volume 完全隔離（<code>sso-prod-*</code> vs <code>sso-test-*</code>），各自發各自的 <code>app_id</code> / <code>app_secret</code>。
+    <!-- ============================ PART I ============================ -->
+    <div class="part-divider">
+      <div class="pk">Part I</div>
+      <h2>系統與技術設計</h2>
+      <p>這個系統解決什麼問題、長什麼樣子、登入怎麼跑、做了哪些工程決策。</p>
     </div>
-  </section>
 
-  <!-- ============ 3 ============ -->
-  <section id="s3">
-    <h2 class="sec">3. SSO 完整 OAuth2 登入流程（§7.1.1）</h2>
-    <p>完整 Authorization Code Flow，含 cookie / client_id / redirect_uri / state / client_secret / code 各驗證分支與失敗導向。每個 🛑 都是一個被擋下的攻擊面。</p>
-    <figure class="diagram">
-      <pre class="mermaid">
+    <!-- 1 專案摘要 -->
+    <section id="summary">
+      <h2 class="sec"><span class="num">1</span>專案摘要</h2>
+      <p class="sectlead lead-line">把「<span class="rd">每套系統各做一份登入、各記一組密碼</span>」變成「<span class="mk">用同一組公司帳號登入一次、到處通用、全程可稽核</span>」的中央 SSO。</p>
+      <p>DF-SSO 是獨立的 <span class="hl">OAuth2 Authorization Server</span>：所有接入應用（Client App）只跟「中央」對話、不直接碰 Microsoft；使用者用 <span class="hl">同一組 Microsoft（Azure AD）公司帳號</span>登入，中央以 Redis session 治理登入狀態，並向 ERP 補員工資料。新系統接入只需向中央申請一組憑證（<code>app_id</code> / <code>app_secret</code>），照整合文件接四個端點即可。</p>
+      <div class="grid cols3" style="margin-top:18px;">
+        <div class="subcard">
+          <h4><span class="ico">一</span>一次登入、到處通用</h4>
+          <p>員工登入一個系統後，切換到其他已接入系統<span class="hl">免再登入</span>，靠中央 session 跳過 Microsoft 那一段。</p>
+        </div>
+        <div class="subcard">
+          <h4><span class="ico">集</span>帳號集中控管</h4>
+          <p>直接沿用 Microsoft 公司帳號，員工到職 / 離職由 <span class="hl">AD 統一控管</span>；登入紀錄、授權、限流都在中央一處。</p>
+        </div>
+        <div class="subcard">
+          <h4><span class="ico">快</span>新系統接入快</h4>
+          <p>申請一組 <code>app_id</code> / <code>app_secret</code>，照 INTEGRATION.md 接 <span class="hl">callback / me / logout / back-channel-logout</span> 四端點即可。</p>
+        </div>
+      </div>
+
+      <div class="metrics" style="margin-top:18px;">
+        <div class="metric">
+          <div class="big">4 <small>端點</small></div>
+          <div class="ml">接入只需接</div>
+          <div class="ms">callback / me / logout / back-channel</div>
+        </div>
+        <div class="metric">
+          <div class="big">24 <small>h</small></div>
+          <div class="ml">中央 session</div>
+          <div class="ms">登入狀態唯一事實來源</div>
+        </div>
+        <div class="metric">
+          <div class="big">5 <small>處</small></div>
+          <div class="ml">一張白名單驅動</div>
+          <div class="ms">授權 / 換 token / CORS / 登出 / redirect</div>
+        </div>
+        <div class="metric">
+          <div class="big">2 <small>套</small></div>
+          <div class="ml">Prod / Test 隔離</div>
+          <div class="ms">DB / Redis volume 完全不共用</div>
+        </div>
+      </div>
+
+      <div class="note warn">
+        <div class="head">接手者最該先知道的三件事</div>
+        ① Azure AD 的 client secret <span class="rd">會過期，過期將導致全公司登入中斷</span> —— 務必先確認到期日與負責續期的人；② <span class="rd">Prod 的資料庫操作不可逆</span>，誤跑會資料全毀（見第 11 節紅線）；③ 其餘風險與待補的營運資訊見「已知風險與待辦」一節。
+      </div>
+    </section>
+
+    <!-- 2 解決的問題與效益 -->
+    <section id="problem">
+      <h2 class="sec"><span class="num">2</span>解決的問題與效益</h2>
+      <p class="sectlead">企業缺乏統一登入時的四大實際痛點，以及 DF-SSO 如何對應、帶來什麼效益。</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th style="width:38%">實際痛點 / 風險</th><th>DF-SSO 的解法</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>每套系統各做登入、各記密碼</strong><br><span class="muted small">員工要記多組帳密、IT <span class="rd">重複維護多套登入機制</span></span></td>
+              <td>登入集中到單一中央；員工<span class="hl">用同一組 Microsoft 公司帳號登入一次</span>，通行所有已接入系統。</td>
+            </tr>
+            <tr>
+              <td><strong>帳號分散、離職難全面撤權</strong><br><span class="muted small"><span class="rd">每套系統各開各關帳號，易有漏網的殭屍帳號</span></span></td>
+              <td>直接沿用 Azure AD，到職 / 離職由 <span class="hl">AD 統一控管</span>；中央 Redis session 為登入狀態唯一事實來源，停用即刻失效。</td>
+            </tr>
+            <tr>
+              <td><strong>安全與稽核各自為政</strong><br><span class="muted small"><span class="rd">登入紀錄、授權範圍、限流散落各系統，難統一控管</span></span></td>
+              <td>登入紀錄、OAuth 授權、Rate Limit、CORS 全部<span class="hl">集中中央一處</span>管理，並寫入 <code>sso_login_log</code>。</td>
+            </tr>
+            <tr>
+              <td><strong>新系統要自己重做登入</strong><br><span class="muted small"><span class="rd">每接一個系統都重造登入輪子，曠日廢時且品質參差</span></span></td>
+              <td>申請一組 <code>app_id</code> / <code>app_secret</code>，照 INTEGRATION.md <span class="hl">接四個端點</span>即可，不必自行實作 OAuth 與安全機制。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>量化效益</h3>
+      <div class="metrics">
+        <div class="metric">
+          <div class="big">1 <small>組帳號</small></div>
+          <div class="ml">通行所有系統</div>
+          <div class="ms"><span class="muted">各記多組密碼 →</span> 單一 Azure AD 帳號</div>
+        </div>
+        <div class="metric">
+          <div class="big">4 <small>端點</small></div>
+          <div class="ml">接入成本</div>
+          <div class="ms">不必自行重做登入</div>
+        </div>
+        <div class="metric">
+          <div class="big">100<small>%</small></div>
+          <div class="ml">登入可稽核</div>
+          <div class="ms">每筆寫入中央登入紀錄</div>
+        </div>
+        <div class="metric">
+          <div class="big">即時</div>
+          <div class="ml">離職 / 停用撤權</div>
+          <div class="ms">清中央 session 即全失效</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 系統架構 -->
+    <section id="arch">
+      <h2 class="sec"><span class="num">3</span>系統架構</h2>
+      <p class="sectlead">Monorepo 前後端分離，以 Docker Compose 編排，Coolify 部署；Prod 與 Test 為兩套獨立 stack。</p>
+
+      <div class="layer">
+        <div class="lh">前端層 · Frontend</div>
+        <div class="lb">
+          <span class="chip"><b>Next.js</b> App Router</span>
+          <span class="chip"><b>TypeScript</b></span>
+          <span class="chip">單頁 Tab Dashboard</span>
+          <span class="chip">cookie-based（<code>credentials: include</code>）</span>
+          <span class="chip">管理 UI · 登入紀錄 · 設定</span>
+        </div>
+      </div>
+
+      <div class="layer">
+        <div class="lh">後端層 · Backend（Authorization Server）</div>
+        <div class="lb">
+          <span class="chip"><b>Express</b> · Node.js</span>
+          <span class="chip"><b>OAuth2</b> Authorization Code Flow</span>
+          <span class="chip"><b>JWT</b>（HS256）+ Redis Session</span>
+          <span class="chip"><b>adminAuth</b> 三層驗證</span>
+          <span class="chip"><b>node-pg-migrate</b> 雙目錄</span>
+          <span class="chip">Helmet · CORS 動態白名單 · Rate Limit</span>
+        </div>
+      </div>
+
+      <div class="layer">
+        <div class="lh">資料與基礎設施 · Data &amp; Infra</div>
+        <div class="lb">
+          <span class="chip"><b>PostgreSQL</b>（白名單 / 登入紀錄 / 管理員）</span>
+          <span class="chip"><b>Redis</b>（24h session · 一次性 auth code）</span>
+          <span class="chip"><b>Docker Compose</b> · Coolify</span>
+          <span class="chip">Prod / Test 雙獨立 stack（<code>sso-prod-*</code> / <code>sso-test-*</code>）</span>
+        </div>
+      </div>
+
+      <div class="layer">
+        <div class="lh">外部整合 · External</div>
+        <div class="lb">
+          <span class="chip"><b>Microsoft Azure AD</b>（MSAL · 帳號 + MFA）</span>
+          <span class="chip"><b>ERP API</b>（員工資料：員編 / 部門）</span>
+          <span class="chip">接入應用 Client Apps（CRM 等）</span>
+        </div>
+      </div>
+
+      <div class="note info">
+        <div class="head">環境隔離</div>
+        Prod 與 Test 是兩套獨立的 Coolify stack，PostgreSQL / Redis volume 完全隔離，各自發各自的 <code>app_id</code> / <code>app_secret</code>。一個系統若要在正式與測試都接 SSO，必須在兩套後台各自新增一次。
+      </div>
+    </section>
+
+    <!-- 3 系統流程圖（§7.1.1，保留不變） -->
+    <section id="flow">
+      <h2 class="sec"><span class="num">4</span>SSO 完整 OAuth2 登入流程（§7.1.1）</h2>
+      <p class="sectlead">完整 Authorization Code Flow，含 cookie / client_id / redirect_uri / state / client_secret / code 各驗證分支與失敗導向。每個 🛑 都是一個被擋下的攻擊面。</p>
+      <figure class="diagram">
+        <pre class="mermaid">
 %%{init: {'sequence': {'mirrorActors': false, 'actorMargin': 45}} }%%
 sequenceDiagram
   participant U as 👤 員工
@@ -370,383 +455,376 @@ sequenceDiagram
   Note over A: ⑨ 寫 httpOnly token cookie<br/>（SameSite=Lax · Max-Age 86400s）
   A->>U: 302 進入 dashboard
   Note over U,M: 之後 App-A 每次受保護請求皆轉發 Bearer 至中央<br/>由中央驗 Redis session — 登入狀態唯一事實來源
-      </pre>
-      <figcaption>圖 1 · 完整 Authorization Code Flow（含各驗證分支與失敗導向）</figcaption>
-    </figure>
-    <div class="note info">
-      <strong>關鍵性質：</strong>① <strong>中央 Redis 是登入狀態的唯一事實來源</strong>（JWT 簽名有效 ≠ 還在登入）；② <strong>跨 App 免登入</strong>靠中央 session 跳過 Microsoft 那一段；③ 登出走中央 <strong>HMAC-SHA256 back-channel</strong> 通知所有接入 App；登出與 silent re-auth 兩種模式取捨見 <code>docs/Design.md</code>。
+        </pre>
+        <figcaption>圖 1 · 完整 Authorization Code Flow（含各驗證分支與失敗導向）</figcaption>
+      </figure>
+      <div class="note info">
+        <div class="head">關鍵性質</div>
+        ① <span class="hl">中央 Redis 是登入狀態的唯一事實來源</span>（JWT 簽名有效 ≠ 還在登入）；② <span class="hl">跨 App 免登入</span>靠中央 session 跳過 Microsoft 那一段；③ 登出走中央 <span class="hl">HMAC-SHA256 back-channel</span> 通知所有接入 App；登出與 silent re-auth 兩種模式取捨見 <code>docs/Design.md</code>。
+      </div>
+    </section>
+
+    <!-- 4 技術亮點 -->
+    <section id="highlights">
+      <h2 class="sec"><span class="num">5</span>技術亮點與工程決策</h2>
+      <p class="sectlead">系統在安全、正確性、可維運性上的關鍵決策 —— 每一條都是「遇到什麼問題 → 怎麼解 → 帶來什麼價值」。</p>
+
+      <div class="grid cols2">
+        <div class="subcard">
+          <h4>🛡️ 安全原語</h4>
+          <p><span class="hl">timingSafeEqual</span> 常數時間比對 secret / state（防 timing attack）、Redis <span class="hl">Lua GET+DEL</span> 原子消耗一次性 code（防重放）、back-channel <span class="hl">HMAC-SHA256 + 30s timestamp</span>（防偽造 / replay）、登入成功 <span class="hl">session.regenerate</span>（防 fixation）。</p>
+        </div>
+        <div class="subcard">
+          <h4>🎯 單一事實來源</h4>
+          <p>登入狀態唯一事實來源是<span class="hl">中央 Redis session</span>，不是 JWT；<span class="hl">白名單一張表</span>同時驅動 OAuth 授權、Code exchange、CORS、登出廣播、redirect 驗證五件事。</p>
+        </div>
+        <div class="subcard">
+          <h4>⚙️ 動態 Rate Limit</h4>
+          <p>四層限流不寫死，由 <code>sso_setting</code> 表動態載入，後台即時調整、<span class="hl">PUT 成功後 reload</span> 重建 limiter；DB 不可用則 <span class="hl">fallback</span> 內建預設值，兼顧可調與可用。</p>
+        </div>
+        <div class="subcard">
+          <h4>🧱 環境隔離與可維運</h4>
+          <p>環境變數集中於 <code>config/index.js</code> 並於啟動驗證必填；<span class="hl">雙 migration 目錄</span>（dev 歷史 / prod baseline）；Prod / Test 完全隔離。</p>
+        </div>
+        <div class="subcard">
+          <h4>🔐 CSRF / Redirect 防護</h4>
+          <p>Microsoft callback 的 <code>state</code> 以常數時間比對（防 CSRF）；<code>redirect_uris</code> 只存 / 比對 <span class="hl">origin</span>，剝除 path/query/fragment（防 open redirect），每 App 上限 10 筆、限 http/https。</p>
+        </div>
+        <div class="subcard">
+          <h4>🌐 前後端分離 + 動態 CORS</h4>
+          <p>CORS 允許來源由白名單即時推導（<span class="hl">快取 60 秒</span>），新增 / 停用應用不需改 server 設定或重部署。</p>
+        </div>
+      </div>
+
+      <h3>安全原語對照表</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th style="width:24%">機制</th><th>解決的問題</th><th>怎麼做</th></tr></thead>
+          <tbody>
+            <tr><td><strong>常數時間比對</strong></td><td>Timing attack — 用回應時間差猜出 secret / state</td><td><code>client_secret</code>、OAuth <code>state</code> 一律 <code>crypto.timingSafeEqual</code>（先比長度再比內容）</td></tr>
+            <tr><td><strong>一次性 code 原子消耗</strong></td><td>Race condition — 同一 code 被重放 / 重複兌換</td><td>Redis <strong>Lua GET+DEL</strong> 單一原子操作，code 一經兌換即刪，TTL 60s</td></tr>
+            <tr><td><strong>Back-channel 簽章</strong></td><td>偽造登出通知 / replay 舊通知</td><td>payload 帶 <strong>HMAC-SHA256(app_secret, user_id:timestamp)</strong>，Client 驗簽章 + 30 秒窗</td></tr>
+            <tr><td><strong>Session fixation 防護</strong></td><td>攻擊者預先固定 session id，登入後接管</td><td>登入成功一律 <code>req.session.regenerate()</code> 換新 session</td></tr>
+            <tr><td><strong>CSRF（state 驗證）</strong></td><td>偽造授權回呼</td><td>Microsoft callback 的 <code>state</code> 常數時間比對，不符即 <code>invalid_state</code></td></tr>
+            <tr><td><strong>Redirect URI 收斂</strong></td><td>Open redirect / path 注入</td><td>只存 / 比對 <code>new URL(uri).origin</code>；每 App 上限 10 筆、限 http/https</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Rate Limit 分層</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>範圍</th><th>預設</th><th>sso_setting key</th><th>防護目標</th></tr></thead>
+          <tbody>
+            <tr><td>全域</td><td>500 / 15min</td><td><code>rate_limit.global</code></td><td>DoS</td></tr>
+            <tr><td>Auth（login / authorize）</td><td>30 / 15min</td><td><code>rate_limit.auth</code></td><td>暴力登入</td></tr>
+            <tr><td>Session（<code>/me</code> / logout）</td><td>100 / 15min</td><td><code>rate_limit.session</code></td><td>高頻 server-to-server</td></tr>
+            <tr><td>Exchange</td><td>20 / 1min</td><td><code>rate_limit.exchange</code></td><td>auth code 猜測</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note tip">
+        <div class="head">💡 一句話總結技術定位</div>
+        DF-SSO 是一個把<span class="mk">身分驗證、session 治理、跨 App 自動登入、安全限流</span>收斂到單一中央、並以 <span class="hl">最小信任邊界 + 單一事實來源</span> 為設計主軸的 OAuth2 Authorization Server。
+      </div>
+    </section>
+
+    <!-- ============================ PART II ============================ -->
+    <div class="part-divider">
+      <div class="pk">Part II</div>
+      <h2>維運操作手冊</h2>
+      <p>以「有人來找你說 ___，你該怎麼做」的情境為主，照著點即可。</p>
     </div>
-  </section>
 
-  <!-- ============ 4 ============ -->
-  <section id="s4">
-    <h2 class="sec">4. 技術亮點與工程決策</h2>
-    <p>這節說明系統在<strong>安全、正確性、可維運性</strong>上做的關鍵決策——每一條都是「遇到什麼問題 → 怎麼解 → 帶來什麼價值」。</p>
+    <!-- 5 線上環境 -->
+    <section id="env">
+      <h2 class="sec"><span class="num">6</span>線上環境一覽</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>環境</th><th>管理後台（你登入操作的地方）</th><th>Backend（系統間溝通用）</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Prod（正式）</strong></td><td>https://df-it-sso-management.it.zerozero.tw</td><td>https://df-it-sso-login.it.zerozero.tw</td></tr>
+            <tr><td><strong>Test（測試）</strong></td><td>https://df-sso-management-test.apps.zerozero.tw</td><td>https://df-sso-login-test.apps.zerozero.tw</td></tr>
+            <tr><td><strong>Dev（本機）</strong></td><td>http://localhost:3000</td><td>http://localhost:3001</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note warn">
+        <div class="head">⚠ Prod 與 Test 完全獨立</div>
+        兩套各自有自己的資料庫、各自發 <code>app_id</code> / <code>app_secret</code>，<strong>不共用</strong>。一個系統若要在正式跟測試都接 SSO，必須在兩套後台各自新增一次，拿到兩組不同的憑證。
+      </div>
+      <p><strong>部署平台</strong>：Coolify（Docker Compose）</p>
+      <ul>
+        <li>Coolify 後台網址：<span class="todo">🔲 待補（口述）</span></li>
+        <li>登入帳號 / 密碼來源：<span class="todo">🔲 待補（口述）</span></li>
+        <li>Prod stack 名稱：<code>sso-prod-*</code>　｜　Test stack 名稱：<code>sso-test-*</code>（Postgres / Redis volume 完全隔離）</li>
+      </ul>
+    </section>
 
-    <h3>4.1 安全原語</h3>
-    <table>
-      <thead><tr><th>機制</th><th>解決的問題</th><th>怎麼做</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><strong>常數時間比對</strong></td>
-          <td>Timing attack — 用回應時間差猜出 secret / state</td>
-          <td><code>client_secret</code>、OAuth <code>state</code> 一律 <code>crypto.timingSafeEqual</code>（先比長度再比內容）</td>
-        </tr>
-        <tr>
-          <td><strong>一次性 auth code 原子消耗</strong></td>
-          <td>Race condition — 同一個 code 被重放 / 重複兌換</td>
-          <td>Redis <strong>Lua script GET+DEL</strong> 單一原子操作，code 一經兌換即刪，TTL 60s</td>
-        </tr>
-        <tr>
-          <td><strong>Back-channel logout 簽章</strong></td>
-          <td>偽造登出通知 / replay 舊通知</td>
-          <td>payload 帶 <strong>HMAC-SHA256(app_secret, user_id:timestamp)</strong>，Client 必須驗簽章 + 30 秒 timestamp 窗</td>
-        </tr>
-        <tr>
-          <td><strong>Session fixation 防護</strong></td>
-          <td>攻擊者預先固定 session id，登入後接管</td>
-          <td>登入成功一律 <code>req.session.regenerate()</code> 換新 session</td>
-        </tr>
-        <tr>
-          <td><strong>CSRF（state 驗證）</strong></td>
-          <td>偽造授權回呼</td>
-          <td>Microsoft callback 的 <code>state</code> 以常數時間比對，不符即 <code>invalid_state</code></td>
-        </tr>
-        <tr>
-          <td><strong>Redirect URI 收斂</strong></td>
-          <td>Open redirect / path 注入</td>
-          <td>只存 / 比對 <code>new URL(uri).origin</code>，剝除 path/query/fragment；每 App 上限 10 筆、限 http/https</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- 6 登入後台 -->
+    <section id="login">
+      <h2 class="sec"><span class="num">7</span>第一次接手：登入管理後台</h2>
+      <ol class="steps">
+        <li>開瀏覽器到上面的<strong>管理後台</strong>網址（正式環境用 Prod 那欄）。</li>
+        <li>點登入 → 會導到 Microsoft 登入頁 → 用你的<strong>公司帳號</strong>登入。</li>
+        <li>登入後若看到 Dashboard，代表你已經是管理員了。</li>
+        <li><strong>若登入後被踢回登入頁 / 顯示沒有權限</strong> → 代表你的 email 還不在管理員白名單。請現任管理員到「管理員」分頁把你的 email 加進去（見 Playbook D），你再重新登入一次即可。</li>
+      </ol>
+      <div class="note info">
+        <div class="head">管理員身分驗證是三層</div>
+        Microsoft 帳號有效 → 中央 session 存在 → 你的 email 在管理員白名單且為啟用狀態。三者缺一就進不來。
+      </div>
+    </section>
 
-    <h3>4.2 單一事實來源（Single Source of Truth）</h3>
-    <ul>
-      <li><strong>登入狀態的唯一事實來源是中央 Redis session</strong>，不是 JWT。JWT 簽名有效 ≠ 還在登入——所以「停用」「登出」之所以即時有效，是因為中央 session 被清掉/擋掉。</li>
-      <li><strong>白名單 <code>sso_allowed_list</code> 同時驅動五件事</strong>：OAuth2 授權、Code exchange、CORS 允許來源（快取 60 秒）、Back-channel logout、Logout redirect 驗證。一張表治理整個信任邊界，改一處五處同步。</li>
-    </ul>
+    <!-- 7 四個分頁 -->
+    <section id="tabs">
+      <h2 class="sec"><span class="num">8</span>後台四個分頁導覽</h2>
+      <p class="sectlead">登入後上方有四個分頁，先認得它們各做什麼：</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>分頁</th><th>標題</th><th>你會在這裡做什麼</th></tr></thead>
+          <tbody>
+            <tr><td><strong>白名單管理</strong></td><td>應用程式管理</td><td>新增 / 停用 / 編輯要接入 SSO 的系統，拿 <code>app_id</code> / <code>app_secret</code>，重設憑證</td></tr>
+            <tr><td><strong>登入紀錄</strong></td><td>登入紀錄搜尋</td><td>查某人某時間登入成功 / 失敗、查 IP、查部門</td></tr>
+            <tr><td><strong>管理員</strong></td><td>管理員名單</td><td>新增 / 停用 / 刪除「能登入這個後台」的人</td></tr>
+            <tr><td><strong>設定</strong></td><td>系統設定</td><td>調整 Rate Limit（防暴力 / 防 DoS 的請求次數上限）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted small">右上角有「登出」按鈕和佈景主題切換。</p>
+    </section>
 
-    <h3>4.3 動態 Rate Limit（可運維、零部署調整）</h3>
-    <p>四層限流（全域 / Auth / Session / Exchange）<strong>不寫死在程式碼</strong>，由 <code>sso_setting</code> 表動態載入，管理員在後台即時調整、<code>PUT</code> 成功後 <code>reload()</code> 重建 limiter。若 DB 不可用則 fallback 到內建預設值——<strong>兼顧可調整與可用性</strong>。</p>
-    <table>
-      <thead><tr><th>範圍</th><th>預設</th><th>防護目標</th></tr></thead>
-      <tbody>
-        <tr><td>全域</td><td>500 / 15min</td><td>DoS</td></tr>
-        <tr><td>Auth（login / authorize）</td><td>30 / 15min</td><td>暴力登入</td></tr>
-        <tr><td>Session（<code>/me</code> / logout）</td><td>100 / 15min</td><td>高頻 server-to-server</td></tr>
-        <tr><td>Exchange</td><td>20 / 1min</td><td>auth code 猜測</td></tr>
-      </tbody>
-    </table>
+    <!-- 8 核心觀念 -->
+    <section id="concept">
+      <h2 class="sec"><span class="num">9</span>核心觀念（處理需求前一定要懂的 5 件事）</h2>
+      <ol class="steps">
+        <li><strong><code>app_id</code> / <code>app_secret</code> 是一個系統接入 SSO 的鑰匙。</strong>由後台「新增應用」時<strong>自動產生</strong>，你不用自己想。<code>app_secret</code> 只有在後台按「顯示」時看得到完整值，列表平常只存末四碼。</li>
+        <li><strong><code>redirect_uris</code> 存的是「origin」不是完整網址。</strong>例如填 <code>https://crm.df-recycle.com.tw</code>，不要填 <code>.../login/callback</code>。一個系統最多 10 筆（給 dev/test/prod 不同網域用），只接受 <code>http</code> / <code>https</code>。</li>
+        <li><strong>「停用」可逆，「刪除」是軟刪除。</strong>停用＝該系統暫時無法登入但資料留著；刪除＝資料庫標記，非真的清掉。兩者都不會動到使用者的 Microsoft 帳號。</li>
+        <li><strong>登入狀態的唯一事實來源是中央的 Redis session，不是 token。</strong>所以「登出」「停用」之所以有效，是因為中央 session 被清掉 / 擋掉。</li>
+        <li><strong>改白名單會同時影響五件事</strong>：OAuth 授權、換 token、CORS 允許來源（快取 60 秒）、登出廣播、登出 redirect 驗證。所以停用一個 App 後，<strong>最多 60 秒</strong>內它的跨網域請求才會真的被擋。</li>
+      </ol>
+    </section>
 
-    <h3>4.4 可維運性與環境隔離</h3>
-    <ul>
-      <li><strong>環境變數集中治理</strong>：所有 <code>process.env</code> 只在 <code>config/index.js</code> 讀，啟動時驗證必填變數——避免散落各處、缺值才在執行時爆炸。</li>
-      <li><strong>雙 migration 目錄</strong>：<code>migrations/dev/</code>（歷史完整）與 <code>migrations/prod/</code>（乾淨 baseline），由 <code>MIGRATIONS_DIR</code> 切換；down 絕不刪管理後台自身白名單，避免毀掉後台自己的存取權。</li>
-      <li><strong>Prod / Test 完全隔離</strong>：兩套 Coolify stack，Postgres / Redis volume 不共用，憑證各自獨立。</li>
-      <li><strong>前後端分離 + CORS 動態白名單</strong>：CORS 允許來源由白名單即時推導（快取 60 秒），新增/停用應用不需改 server 設定或重部署。</li>
-    </ul>
+    <!-- 9 Playbook -->
+    <section id="playbook">
+      <h2 class="sec"><span class="num">10</span>常見使用者需求 Playbook（照著點）</h2>
+      <div class="note info">以下每個情境都假設你<strong>已登入正式環境的管理後台</strong>。測試環境同理，只是換到 Test 後台操作。</div>
 
-    <div class="note tip">
-      <strong>一句話總結技術定位：</strong>DF-SSO 是一個把「身分驗證、session 治理、跨 App 自動登入、安全限流」收斂到單一中央、並以<strong>最小信任邊界 + 單一事實來源</strong>為設計主軸的 OAuth2 Authorization Server。
-    </div>
-  </section>
+      <div class="playbook-head"><h3>Playbook A：「幫我把 ○○ 系統接進 SSO」</h3></div>
+      <p>這是最常見的需求。你的工作是<strong>發憑證</strong>，對方工程師負責<strong>在他的系統裡接</strong>。</p>
+      <h4>你在後台要做的：</h4>
+      <ol class="steps">
+        <li>進「<strong>白名單管理</strong>」分頁。</li>
+        <li>右上角點「<strong>＋ 新增應用</strong>」。</li>
+        <li>填表單：
+          <ul>
+            <li><strong>網域 *</strong>（必填）：對方系統正式網址 origin，例如 <code>https://crm.df-recycle.com.tw</code>。必須是合法 http/https，否則被擋。</li>
+            <li><strong>系統名稱</strong>：給人看的名字，例如「CRM 系統」。</li>
+            <li><strong>說明</strong>：一句話描述用途（可空白）。</li>
+            <li><strong>Redirect URIs</strong>：每行一個 origin，dev/test/prod 各一行，最多 10 筆。例如：
+              <div class="codeblock"><div class="lang">Redirect URIs</div><pre><code>http://localhost:3100
+https://crm-test.apps.zerozero.tw
+https://crm.df-recycle.com.tw</code></pre></div>
+            </li>
+            <li><strong>Frontend URL / Backend Docs URL</strong>：選填，方便日後快速點開該系統首頁 / API 文件。</li>
+          </ul>
+        </li>
+        <li>按「<strong>建立應用</strong>」。系統會<strong>自動產生</strong> <code>app_id</code> 和 <code>app_secret</code>。</li>
+        <li>在該應用那一列，點 <strong>App Secret 欄位的眼睛圖示</strong>「顯示」→ 出現完整 <code>app_secret</code>。</li>
+        <li>點旁邊的<strong>複製圖示</strong>，把 <code>app_id</code> 和 <code>app_secret</code> 複製下來。</li>
+        <li><strong>安全地</strong>把這兩個值交給對方工程師，並請他讀 INTEGRATION.md 自行接入。</li>
+      </ol>
+      <h4>交付給對方的東西：</h4>
+      <ul>
+        <li><code>app_id</code>、<code>app_secret</code></li>
+        <li>SSO Backend 網址（依環境給 Prod 或 Test）</li>
+        <li>一句話：「請照 INTEGRATION.md 接 callback / me / logout / back-channel-logout 四個端點」</li>
+      </ul>
+      <div class="note warn">
+        <div class="head">⚠ 安全提醒</div>
+        <code>app_secret</code> 等同密碼。<strong>不要用一般聊天 / email 明文傳。</strong>用公司核可的密碼傳遞方式。<span class="todo">🔲 待補（口述）：公司目前用什麼方式傳 secret？</span>
+      </div>
+      <div class="note tip">
+        <div class="head">💡 後續多了新網域</div>
+        （例如多開一個測試站）→ 不用重發憑證，直接「編輯」這個應用，在 Redirect URIs 多加一行即可（上限 10）。
+      </div>
 
-  <!-- ========================================================= -->
-  <!--  PART II — 維運操作手冊                                    -->
-  <!-- ========================================================= -->
-  <div class="part-divider">
-    <div class="kicker">Part II</div>
-    <h2>維運操作手冊</h2>
-    <p>以「有人來找你說 ___，你該怎麼做」的情境為主，照著點即可。</p>
+      <div class="playbook-head"><h3>Playbook B：「某某員工登不進去 / 某系統登入有問題」</h3></div>
+      <p>先別急著改設定，<strong>用登入紀錄定位問題</strong>。</p>
+      <ol class="steps">
+        <li>進「<strong>登入紀錄</strong>」分頁。</li>
+        <li>在「<strong>Email</strong>」欄輸入該員工公司 email → 按「搜尋」。</li>
+        <li>可用「狀態」「開始 / 結束日期」縮小範圍。</li>
+        <li>看最近一筆的「<strong>狀態</strong>」欄：</li>
+      </ol>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>狀態</th><th>意思</th><th>通常怎麼處理</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge green">成功 success</span></td><td>SSO 這端登入成功</td><td>問題多半在<strong>對方系統</strong>那端（token 驗證 / cookie / redirect），請對方工程師查</td></tr>
+            <tr><td><span class="badge red">失敗 failed</span></td><td>Microsoft 認證或流程失敗</td><td>確認該員工 Microsoft 帳號正常、密碼沒過期；多人同時發生才可能是系統問題</td></tr>
+            <tr><td><span class="badge amber">ERP 未找到</span></td><td>帳號登入了，但在 ERP 對不到員工資料</td><td>該員工 ERP 員編 / 資料有問題，需找 ERP 端確認 <span class="todo">🔲 待補：ERP 由誰維護？</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li>若<strong>完全查不到該員工任何紀錄</strong> → 請求根本沒到 SSO，問題在對方系統「沒登入時要導來 SSO」那段沒接好，或網域沒在 Redirect URIs 裡。</li>
+        <li>若<strong>整個系統所有人都登不進去</strong> → 先確認該應用在「白名單管理」是不是被「停用」了；再看第 12 節故障排除。</li>
+      </ul>
+
+      <div class="playbook-head"><h3>Playbook C：「○○ 系統要下線 / 暫停 / 憑證外洩」</h3></div>
+      <h4>情況一：暫時停用（之後可能再開）</h4>
+      <ol class="steps">
+        <li>進「白名單管理」，找到該應用。</li>
+        <li>點該列「<strong>狀態</strong>」欄的綠色「啟用」標籤 → 變灰色「停用」。</li>
+        <li>完成。該系統最多 60 秒後無法再登入（CORS 快取到期）。要恢復就再點一次。</li>
+      </ol>
+      <h4>情況二：<code>app_secret</code> 外洩，要換新的</h4>
+      <ol class="steps">
+        <li>進「白名單管理」，找到該應用。</li>
+        <li>先點 App Secret 的眼睛圖示「顯示」（<strong>「重新產生」按鈕只有在顯示憑證時才出現</strong>）。</li>
+        <li>點「<strong>重新產生</strong>」→ 確認框按確定。</li>
+        <li><strong>舊 secret 立刻失效</strong>，畫面跳出新的 secret。</li>
+        <li><strong>立即複製新 secret</strong>，交給對方工程師更新環境變數。</li>
+      </ol>
+      <div class="note danger">
+        <div class="head">⚠ 注意時機</div>
+        在對方更新完成前，他的系統會<strong>換不到 token（登入會壞）</strong>，所以這動作要跟對方講好時間再做。
+      </div>
+      <h4>情況三：永久下線</h4>
+      <ol class="steps">
+        <li>確認真的不要了（軟刪除可救，但別當常態操作）。</li>
+        <li>進「白名單管理」，找到該應用，點「<strong>刪除</strong>」→ 確認。</li>
+      </ol>
+
+      <div class="playbook-head"><h3>Playbook D：「新增 / 移除一位後台管理員」</h3></div>
+      <div class="note info">「管理員」＝能登入<strong>這個後台</strong>的人，不是一般系統使用者。</div>
+      <h4>新增：</h4>
+      <ol class="steps">
+        <li>進「<strong>管理員</strong>」分頁 → 右上角「<strong>新增管理員</strong>」。</li>
+        <li>只需填對方<strong>公司 email</strong>（會自動轉小寫）→ 按「新增」。</li>
+        <li>對方姓名 / Azure 資訊會在他<strong>首次登入後自動補上</strong>（在那之前狀態顯示「未登入」）。</li>
+        <li>請對方自己去管理後台用 Microsoft 帳號登入一次即可生效。</li>
+      </ol>
+      <h4>停用 / 刪除：</h4>
+      <ul>
+        <li><strong>停用</strong>（保留資料、暫時不給進）：在該管理員那列點「啟用 / 停用」標籤切換。</li>
+        <li><strong>刪除</strong>：點該列「刪除」→ 確認。</li>
+      </ul>
+      <div class="note warn">
+        <div class="head">⚠ 系統禁止你刪除自己</div>
+        （會跳「無法刪除自己」），這是防呆，正常現象。要移除自己請找另一位管理員操作。
+      </div>
+
+      <div class="playbook-head"><h3>Playbook E：「登入一直被擋 / too many requests / 要調次數上限」</h3></div>
+      <p>SSO 有 Rate Limit（每個 IP 在一段時間內的請求上限），防暴力登入與 DoS。可在後台動態調整、<strong>改完立即生效</strong>。</p>
+      <ol class="steps">
+        <li>進「<strong>設定</strong>」分頁 → 找「速率限制（Rate Limit）」區。</li>
+        <li>會看到四組可調的限制（key 與預設值見第 5 節「Rate Limit 分層」表）。</li>
+        <li>改「視窗長度（windowMs，毫秒）」或「最大請求數（max）」→ 卡片右上出現「未儲存」→ 按「<strong>儲存</strong>」。</li>
+        <li>儲存後立即生效，<strong>該限制計數會歸零重來</strong>。</li>
+      </ol>
+      <div class="note warn">
+        <div class="head">⚠ 調大上限會降低安全防護</div>
+        請有理由再調（例如某系統是 server-to-server 高頻呼叫才需調 <code>session</code>）。不確定就先別動，問前手。若資料庫暫時連不上，系統會自動 fallback 回預設值。
+      </div>
+    </section>
+
+    <!-- 10 維運操作 -->
+    <section id="ops">
+      <h2 class="sec"><span class="num">11</span>維運操作（需要進伺服器 / 跑指令的）</h2>
+      <p class="sectlead">這些不是日常點按操作，是工程師偶爾才會做的。指令細節見 CLAUDE.md。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>我要做什麼</th><th>怎麼做</th></tr></thead>
+          <tbody>
+            <tr><td>看後端 log</td><td>到 Coolify 對應 stack 看 container log</td></tr>
+            <tr><td>重啟服務</td><td>Coolify 上 redeploy / restart 對應 stack</td></tr>
+            <tr><td>改環境變數</td><td>Coolify 該 stack 的環境變數設定，改完要 redeploy</td></tr>
+            <tr><td>套用資料庫變更（migration）</td><td>Prod 用 <code>npm run migrate:up:prod</code>；Dev/Test 用 <code>npm run migrate:up:dev</code></td></tr>
+            <tr><td>本機跑起來開發</td><td><code>backend/</code> 跑 <code>npm run dev</code>；<code>frontend/</code> 跑 <code>npm run dev</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note danger">
+        <div class="head">⚠ Migration 紅線（務必遵守）</div>
+        <ul style="margin:8px 0 0;">
+          <li><strong>不要手動在 Prod 跑 <code>migrate:down</code></strong> — Prod baseline 的 down 會 drop 掉三張表，資料全毀。</li>
+          <li>Schema 改動要 <strong>dev 和 prod 兩個目錄都加</strong>。</li>
+          <li>migration 的 down <strong>絕不刪除管理後台自己網域的白名單資料</strong>（否則會把後台自己的存取權毀掉）。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 11 故障排除 -->
+    <section id="runbook">
+      <h2 class="sec"><span class="num">12</span>故障排除 Runbook</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>症狀</th><th>可能原因</th><th>先檢查什麼</th></tr></thead>
+          <tbody>
+            <tr><td><strong>所有人、所有系統都登不進去</strong></td><td>中央 Redis / Postgres 掛了，或服務沒起來</td><td>Coolify 看 backend container 是否運行、Redis/Postgres 是否健康；看 backend log</td></tr>
+            <tr><td><strong>單一系統全部人登不進去</strong></td><td>該 App 被停用 / 憑證被重設沒同步 / Redirect URI 沒包含其網域</td><td>白名單管理確認該 App「啟用」中、Redirect URIs 含其 origin</td></tr>
+            <tr><td><strong>單一使用者登不進去</strong></td><td>個人帳號 / ERP 資料問題</td><td>走 Playbook B 查登入紀錄</td></tr>
+            <tr><td><strong>跨系統免登入失效</strong>（每個系統都要重登）</td><td>中央 session 沒建立 / cookie 被擋</td><td>確認 session 正常、瀏覽器第三方 cookie 設定</td></tr>
+            <tr><td><strong>出現 CORS 錯誤</strong></td><td>該系統 origin 不在白名單，或剛改完還在 60 秒快取內</td><td>確認 Redirect URIs / 網域有填對，等 60 秒再試</td></tr>
+            <tr><td><strong>改了 Rate Limit 沒生效</strong></td><td>—</td><td>確認有按「儲存」、看到提示；理論上即時生效</td></tr>
+            <tr><td><strong>登出後又自動被登回去</strong></td><td>silent re-auth 行為，屬設計取捨</td><td>見 Design.md 的「登入頁兩種模式」與「Single Logout 加強模式」</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note tip">
+        大部分「登入成功但系統還是怪怪的」問題，根因在<strong>對方系統</strong>那端的接入，不在 SSO 中央。用登入紀錄確認「SSO 這端是 success」就可以把球丟回去給對方工程師查。
+      </div>
+    </section>
+
+    <!-- 12 已知風險 -->
+    <section id="risk">
+      <h2 class="sec"><span class="num">13</span>已知風險與待辦</h2>
+      <div class="note warn">這節請前手依實際情況補充。以下是建議至少記錄的項目：</div>
+      <ul>
+        <li><strong>Azure AD client secret 會過期</strong> — 到期前要續，否則全公司登入中斷。到期日：<span class="todo">🔲 待補</span></li>
+        <li><strong>Prod migration 不可逆風險</strong> — 見第 11 節紅線。</li>
+        <li><strong>目前未完成 / 技術債</strong> — <span class="todo">🔲 待補（口述）</span></li>
+        <li><strong>監控 / 告警現況</strong> — 目前有沒有「SSO 掛了會通知人」的機制？<span class="todo">🔲 待補</span></li>
+        <li><strong>備份</strong> — Postgres 多久備份一次、備份在哪、怎麼還原？<span class="todo">🔲 待補</span></li>
+      </ul>
+    </section>
+
+    <!-- 13 延伸閱讀 -->
+    <section id="refs">
+      <h2 class="sec"><span class="num">14</span>延伸閱讀</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>想了解</th><th>看這份</th></tr></thead>
+          <tbody>
+            <tr><td>系統怎麼設計、完整流程、資料表、安全機制、所有限制</td><td><code>docs/Design.md</code></td></tr>
+            <tr><td>我是 Client App 工程師，要怎麼接 SSO</td><td><code>INTEGRATION.md</code></td></tr>
+            <tr><td>開發慣例、不要踩的雷、常用指令</td><td><code>CLAUDE.md</code></td></tr>
+            <tr><td>系統總覽 / 環境 / API 端點速查</td><td><code>README.md</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="page">
+      本手冊由程式碼與現有設計文件整理而成；標 🔲 的營運資訊需由前手口述補上。交接時請更新此日期 ── 最後更新：2026-06-22
+    </footer>
+
   </div>
 
-  <!-- ============ 5 ============ -->
-  <section id="s5">
-    <h2 class="sec">5. 線上環境一覽</h2>
-    <table>
-      <thead><tr><th>環境</th><th>管理後台（你登入操作的地方）</th><th>Backend（系統間溝通用）</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Prod（正式）</strong></td><td>https://df-it-sso-management.it.zerozero.tw</td><td>https://df-it-sso-login.it.zerozero.tw</td></tr>
-        <tr><td><strong>Test（測試）</strong></td><td>https://df-sso-management-test.apps.zerozero.tw</td><td>https://df-sso-login-test.apps.zerozero.tw</td></tr>
-        <tr><td><strong>Dev（本機）</strong></td><td>http://localhost:3000</td><td>http://localhost:3001</td></tr>
-      </tbody>
-    </table>
-    <div class="note warn">
-      <strong>⚠️ Prod 與 Test 完全獨立：</strong>兩套各自有自己的資料庫、各自發 <code>app_id</code> / <code>app_secret</code>，<strong>不共用</strong>。
-      一個系統若要在正式跟測試都接 SSO，必須在兩套後台各自新增一次，拿到兩組不同的憑證。
-    </div>
-    <p><strong>部署平台</strong>：Coolify（Docker Compose）</p>
-    <ul>
-      <li>Coolify 後台網址：<span class="todo">🔲 待補（口述）</span></li>
-      <li>登入帳號 / 密碼來源：<span class="todo">🔲 待補（口述）</span></li>
-      <li>Prod stack 名稱：<code>sso-prod-*</code>　｜　Test stack 名稱：<code>sso-test-*</code>（Postgres / Redis volume 完全隔離）</li>
-    </ul>
-  </section>
-
-  <!-- ============ 6 ============ -->
-  <section id="s6">
-    <h2 class="sec">6. 第一次接手：登入管理後台</h2>
-    <ol class="steps">
-      <li>開瀏覽器到上面的<strong>管理後台</strong>網址（正式環境用 Prod 那欄）。</li>
-      <li>點登入 → 會導到 Microsoft 登入頁 → 用你的<strong>公司帳號</strong>登入。</li>
-      <li>登入後若看到 Dashboard，代表你已經是管理員了。</li>
-      <li><strong>若登入後被踢回登入頁 / 顯示沒有權限</strong> → 代表你的 email 還不在管理員白名單。請現任管理員到「管理員」分頁把你的 email 加進去（見 Playbook D），你再重新登入一次即可。</li>
-    </ol>
-    <div class="note info">
-      管理員身分驗證是三層：Microsoft 帳號有效 → 中央 session 存在 → 你的 email 在管理員白名單且為啟用狀態。三者缺一就進不來。
-    </div>
-  </section>
-
-  <!-- ============ 7 ============ -->
-  <section id="s7">
-    <h2 class="sec">7. 後台四個分頁導覽</h2>
-    <p>登入後上方有四個分頁，先認得它們各做什麼：</p>
-    <table>
-      <thead><tr><th>分頁</th><th>標題</th><th>你會在這裡做什麼</th></tr></thead>
-      <tbody>
-        <tr><td><strong>白名單管理</strong></td><td>應用程式管理</td><td>新增 / 停用 / 編輯要接入 SSO 的系統，拿 <code>app_id</code> / <code>app_secret</code>，重設憑證</td></tr>
-        <tr><td><strong>登入紀錄</strong></td><td>登入紀錄搜尋</td><td>查某人某時間登入成功/失敗、查 IP、查部門</td></tr>
-        <tr><td><strong>管理員</strong></td><td>管理員名單</td><td>新增 / 停用 / 刪除「能登入這個後台」的人</td></tr>
-        <tr><td><strong>設定</strong></td><td>系統設定</td><td>調整 Rate Limit（防暴力 / 防 DoS 的請求次數上限）</td></tr>
-      </tbody>
-    </table>
-    <p>右上角有「登出」按鈕和佈景主題切換。</p>
-  </section>
-
-  <!-- ============ 8 ============ -->
-  <section id="s8">
-    <h2 class="sec">8. 核心觀念（處理需求前一定要懂的 5 件事）</h2>
-    <ol class="steps">
-      <li><strong><code>app_id</code> / <code>app_secret</code> 是一個系統接入 SSO 的鑰匙。</strong>由後台「新增應用」時<strong>自動產生</strong>，你不用自己想。<code>app_secret</code> 只有在後台按「顯示」時看得到完整值，列表平常只存末四碼。</li>
-      <li><strong><code>redirect_uris</code> 存的是「origin」不是完整網址。</strong>例如填 <code>https://crm.df-recycle.com.tw</code>，不要填 <code>.../login/callback</code>。一個系統最多 10 筆（給 dev/test/prod 不同網域用），只接受 <code>http</code> / <code>https</code>。</li>
-      <li><strong>「停用」可逆，「刪除」是軟刪除。</strong>停用＝該系統暫時無法登入但資料留著；刪除＝資料庫標記，非真的清掉。兩者都不會動到使用者的 Microsoft 帳號。</li>
-      <li><strong>登入狀態的唯一事實來源是中央的 Redis session，不是 token。</strong>所以「登出」「停用」之所以有效，是因為中央 session 被清掉 / 擋掉。</li>
-      <li><strong>改白名單會同時影響五件事</strong>：OAuth 授權、換 token、CORS 允許來源（快取 60 秒）、登出廣播、登出 redirect 驗證。所以停用一個 App 後，<strong>最多 60 秒</strong>內它的跨網域請求才會真的被擋。</li>
-    </ol>
-  </section>
-
-  <!-- ============ 9 ============ -->
-  <section id="s9">
-    <h2 class="sec">9. 常見使用者需求 Playbook（照著點）</h2>
-    <div class="note info">以下每個情境都假設你<strong>已登入正式環境的管理後台</strong>。測試環境同理，只是換到 Test 後台操作。</div>
-
-    <!-- A -->
-    <div class="playbook-head"><h3>Playbook A：「幫我把 ○○ 系統接進 SSO」</h3></div>
-    <p>這是最常見的需求。你的工作是<strong>發憑證</strong>，對方工程師負責<strong>在他的系統裡接</strong>。</p>
-    <h4>你在後台要做的：</h4>
-    <ol class="steps">
-      <li>進「<strong>白名單管理</strong>」分頁。</li>
-      <li>右上角點「<strong>＋ 新增應用</strong>」。</li>
-      <li>填表單：
-        <ul>
-          <li><strong>網域 *</strong>（必填）：對方系統正式網址 origin，例如 <code>https://crm.df-recycle.com.tw</code>。必須是合法 http/https，否則被擋。</li>
-          <li><strong>系統名稱</strong>：給人看的名字，例如「CRM 系統」。</li>
-          <li><strong>說明</strong>：一句話描述用途（可空白）。</li>
-          <li><strong>Redirect URIs</strong>：每行一個 origin，dev/test/prod 各一行，最多 10 筆。例如：
-            <pre><code>http://localhost:3100
-https://crm-test.apps.zerozero.tw
-https://crm.df-recycle.com.tw</code></pre>
-          </li>
-          <li><strong>Frontend URL / Backend Docs URL</strong>：選填，方便日後快速點開該系統首頁 / API 文件。</li>
-        </ul>
-      </li>
-      <li>按「<strong>建立應用</strong>」。系統會<strong>自動產生</strong> <code>app_id</code> 和 <code>app_secret</code>。</li>
-      <li>在該應用那一列，點 <strong>App Secret 欄位的眼睛圖示</strong>「顯示」→ 出現完整 <code>app_secret</code>。</li>
-      <li>點旁邊的<strong>複製圖示</strong>，把 <code>app_id</code> 和 <code>app_secret</code> 複製下來。</li>
-      <li><strong>安全地</strong>把這兩個值交給對方工程師，並請他讀 INTEGRATION.md 自行接入。</li>
-    </ol>
-    <h4>交付給對方的東西：</h4>
-    <ul>
-      <li><code>app_id</code>、<code>app_secret</code></li>
-      <li>SSO Backend 網址（依環境給 Prod 或 Test）</li>
-      <li>一句話：「請照 INTEGRATION.md 接 callback / me / logout / back-channel-logout 四個端點」</li>
-    </ul>
-    <div class="note warn">
-      <strong>⚠️ 安全提醒：</strong><code>app_secret</code> 等同密碼。<strong>不要用一般聊天 / email 明文傳。</strong>用公司核可的密碼傳遞方式。<span class="todo">🔲 待補（口述）：公司目前用什麼方式傳 secret？</span>
-    </div>
-    <div class="note tip">
-      <strong>💡 後續多了新網域</strong>（例如多開一個測試站）→ 不用重發憑證，直接「編輯」這個應用，在 Redirect URIs 多加一行即可（上限 10）。
-    </div>
-
-    <!-- B -->
-    <div class="playbook-head"><h3>Playbook B：「某某員工登不進去 / 某系統登入有問題」</h3></div>
-    <p>先別急著改設定，<strong>用登入紀錄定位問題</strong>。</p>
-    <ol class="steps">
-      <li>進「<strong>登入紀錄</strong>」分頁。</li>
-      <li>在「<strong>Email</strong>」欄輸入該員工公司 email → 按「搜尋」。</li>
-      <li>可用「狀態」「開始/結束日期」縮小範圍。</li>
-      <li>看最近一筆的「<strong>狀態</strong>」欄：</li>
-    </ol>
-    <table>
-      <thead><tr><th>狀態</th><th>意思</th><th>通常怎麼處理</th></tr></thead>
-      <tbody>
-        <tr><td><span class="pill green">成功 success</span></td><td>SSO 這端登入成功</td><td>問題多半在<strong>對方系統</strong>那端（token 驗證 / cookie / redirect），請對方工程師查</td></tr>
-        <tr><td><span class="pill red">失敗 failed</span></td><td>Microsoft 認證或流程失敗</td><td>確認該員工 Microsoft 帳號正常、密碼沒過期；多人同時發生才可能是系統問題</td></tr>
-        <tr><td><span class="pill amber">ERP 未找到</span></td><td>帳號登入了，但在 ERP 對不到員工資料</td><td>該員工 ERP 員編 / 資料有問題，需找 ERP 端確認 <span class="todo">🔲 待補：ERP 由誰維護？</span></td></tr>
-      </tbody>
-    </table>
-    <ul>
-      <li>若<strong>完全查不到該員工任何紀錄</strong> → 請求根本沒到 SSO，問題在對方系統「沒登入時要導來 SSO」那段沒接好，或網域沒在 Redirect URIs 裡。</li>
-      <li>若<strong>整個系統所有人都登不進去</strong> → 先確認該應用在「白名單管理」是不是被「停用」了；再看第 11 節故障排除。</li>
-    </ul>
-
-    <!-- C -->
-    <div class="playbook-head"><h3>Playbook C：「○○ 系統要下線 / 暫停 / 憑證外洩」</h3></div>
-    <h4>情況一：暫時停用（之後可能再開）</h4>
-    <ol class="steps">
-      <li>進「白名單管理」，找到該應用。</li>
-      <li>點該列「<strong>狀態</strong>」欄的綠色「啟用」標籤 → 變灰色「停用」。</li>
-      <li>完成。該系統最多 60 秒後無法再登入（CORS 快取到期）。要恢復就再點一次。</li>
-    </ol>
-    <h4>情況二：<code>app_secret</code> 外洩，要換新的</h4>
-    <ol class="steps">
-      <li>進「白名單管理」，找到該應用。</li>
-      <li>先點 App Secret 的眼睛圖示「顯示」（<strong>「重新產生」按鈕只有在顯示憑證時才出現</strong>）。</li>
-      <li>點「<strong>重新產生</strong>」→ 確認框按確定。</li>
-      <li><strong>舊 secret 立刻失效</strong>，畫面跳出新的 secret。</li>
-      <li><strong>立即複製新 secret</strong>，交給對方工程師更新環境變數。</li>
-    </ol>
-    <div class="note danger">
-      <strong>⚠️</strong> 在對方更新完成前，他的系統會<strong>換不到 token（登入會壞）</strong>，所以這動作要跟對方講好時間再做。
-    </div>
-    <h4>情況三：永久下線</h4>
-    <ol class="steps">
-      <li>確認真的不要了（軟刪除可救，但別當常態操作）。</li>
-      <li>進「白名單管理」，找到該應用，點「<strong>刪除</strong>」→ 確認。</li>
-    </ol>
-
-    <!-- D -->
-    <div class="playbook-head"><h3>Playbook D：「新增 / 移除一位後台管理員」</h3></div>
-    <div class="note info">「管理員」＝能登入<strong>這個後台</strong>的人，不是一般系統使用者。</div>
-    <h4>新增：</h4>
-    <ol class="steps">
-      <li>進「<strong>管理員</strong>」分頁 → 右上角「<strong>新增管理員</strong>」。</li>
-      <li>只需填對方<strong>公司 email</strong>（會自動轉小寫）→ 按「新增」。</li>
-      <li>對方姓名 / Azure 資訊會在他<strong>首次登入後自動補上</strong>（在那之前狀態顯示「未登入」）。</li>
-      <li>請對方自己去管理後台用 Microsoft 帳號登入一次即可生效。</li>
-    </ol>
-    <h4>停用 / 刪除：</h4>
-    <ul>
-      <li><strong>停用</strong>（保留資料、暫時不給進）：在該管理員那列點「啟用/停用」標籤切換。</li>
-      <li><strong>刪除</strong>：點該列「刪除」→ 確認。</li>
-    </ul>
-    <div class="note warn">
-      <strong>⚠️ 系統禁止你刪除自己</strong>（會跳「無法刪除自己」），這是防呆，正常現象。要移除自己請找另一位管理員操作。
-    </div>
-
-    <!-- E -->
-    <div class="playbook-head"><h3>Playbook E：「登入一直被擋 / too many requests / 要調次數上限」</h3></div>
-    <p>SSO 有 Rate Limit（每個 IP 在一段時間內的請求上限），防暴力登入與 DoS。可在後台動態調整、<strong>改完立即生效</strong>。</p>
-    <ol class="steps">
-      <li>進「<strong>設定</strong>」分頁 → 找「速率限制（Rate Limit）」區。</li>
-      <li>會看到四組可調的限制：</li>
-    </ol>
-    <table>
-      <thead><tr><th>設定 key</th><th>預設</th><th>管什麼</th></tr></thead>
-      <tbody>
-        <tr><td><code>rate_limit.global</code></td><td>500 / 15 分鐘</td><td>全域總量，防 DoS</td></tr>
-        <tr><td><code>rate_limit.auth</code></td><td>30 / 15 分鐘</td><td>登入 / 授權，防暴力登入</td></tr>
-        <tr><td><code>rate_limit.session</code></td><td>100 / 15 分鐘</td><td>系統間高頻呼叫（<code>/me</code>、登出）</td></tr>
-        <tr><td><code>rate_limit.exchange</code></td><td>20 / 1 分鐘</td><td>換 token，防猜測</td></tr>
-      </tbody>
-    </table>
-    <ol class="steps" start="3">
-      <li>改「視窗長度（windowMs，毫秒）」或「最大請求數（max）」→ 卡片右上出現「未儲存」→ 按「<strong>儲存</strong>」。</li>
-      <li>儲存後立即生效，<strong>該限制計數會歸零重來</strong>。</li>
-    </ol>
-    <div class="note warn">
-      <strong>⚠️</strong> 調大上限會降低安全防護，請有理由再調（例如某系統是 server-to-server 高頻呼叫才需調 <code>session</code>）。不確定就先別動，問前手。若資料庫暫時連不上，系統會自動 fallback 回上表預設值。
-    </div>
-  </section>
-
-  <!-- ============ 10 ============ -->
-  <section id="s10">
-    <h2 class="sec">10. 維運操作（需要進伺服器 / 跑指令的）</h2>
-    <p>這些不是日常點按操作，是工程師偶爾才會做的。指令細節見 CLAUDE.md。</p>
-    <table>
-      <thead><tr><th>我要做什麼</th><th>怎麼做</th></tr></thead>
-      <tbody>
-        <tr><td>看後端 log</td><td>到 Coolify 對應 stack 看 container log</td></tr>
-        <tr><td>重啟服務</td><td>Coolify 上 redeploy / restart 對應 stack</td></tr>
-        <tr><td>改環境變數</td><td>Coolify 該 stack 的環境變數設定，改完要 redeploy</td></tr>
-        <tr><td>套用資料庫變更（migration）</td><td>Prod 用 <code>npm run migrate:up:prod</code>；Dev/Test 用 <code>npm run migrate:up:dev</code></td></tr>
-        <tr><td>本機跑起來開發</td><td><code>backend/</code> 跑 <code>npm run dev</code>；<code>frontend/</code> 跑 <code>npm run dev</code></td></tr>
-      </tbody>
-    </table>
-    <div class="note danger">
-      <strong>⚠️ Migration 紅線（務必遵守）：</strong>
-      <ul style="margin:8px 0 0;">
-        <li><strong>不要手動在 Prod 跑 <code>migrate:down</code></strong> — Prod baseline 的 down 會 drop 掉三張表，資料全毀。</li>
-        <li>Schema 改動要 <strong>dev 和 prod 兩個目錄都加</strong>。</li>
-        <li>migration 的 down <strong>絕不刪除管理後台自己網域的白名單資料</strong>（否則會把後台自己的存取權毀掉）。</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ============ 11 ============ -->
-  <section id="s11">
-    <h2 class="sec">11. 故障排除 Runbook</h2>
-    <table>
-      <thead><tr><th>症狀</th><th>可能原因</th><th>先檢查什麼</th></tr></thead>
-      <tbody>
-        <tr><td><strong>所有人、所有系統都登不進去</strong></td><td>中央 Redis / Postgres 掛了，或服務沒起來</td><td>Coolify 看 backend container 是否運行、Redis/Postgres 是否健康；看 backend log</td></tr>
-        <tr><td><strong>單一系統全部人登不進去</strong></td><td>該 App 被停用 / 憑證被重設沒同步 / Redirect URI 沒包含其網域</td><td>白名單管理確認該 App「啟用」中、Redirect URIs 含其 origin</td></tr>
-        <tr><td><strong>單一使用者登不進去</strong></td><td>個人帳號 / ERP 資料問題</td><td>走 Playbook B 查登入紀錄</td></tr>
-        <tr><td><strong>跨系統免登入失效</strong>（每個系統都要重登）</td><td>中央 session 沒建立 / cookie 被擋</td><td>確認 session 正常、瀏覽器第三方 cookie 設定</td></tr>
-        <tr><td><strong>出現 CORS 錯誤</strong></td><td>該系統 origin 不在白名單，或剛改完還在 60 秒快取內</td><td>確認 Redirect URIs / 網域有填對，等 60 秒再試</td></tr>
-        <tr><td><strong>改了 Rate Limit 沒生效</strong></td><td>—</td><td>確認有按「儲存」、看到提示；理論上即時生效</td></tr>
-        <tr><td><strong>登出後又自動被登回去</strong></td><td>silent re-auth 行為，屬設計取捨</td><td>見 Design.md 的「登入頁兩種模式」與「Single Logout 加強模式」</td></tr>
-      </tbody>
-    </table>
-    <div class="note tip">
-      大部分「登入成功但系統還是怪怪的」問題，根因在<strong>對方系統</strong>那端的接入，不在 SSO 中央。用登入紀錄確認「SSO 這端是 success」就可以把球丟回去給對方工程師查。
-    </div>
-  </section>
-
-  <!-- ============ 12 ============ -->
-  <section id="s12">
-    <h2 class="sec">12. 已知風險與待辦</h2>
-    <div class="note warn">這節請前手依實際情況補充。以下是建議至少記錄的項目：</div>
-    <ul>
-      <li><strong>Azure AD client secret 會過期</strong> — 到期前要續，否則全公司登入中斷。到期日：<span class="todo">🔲 待補</span></li>
-      <li><strong>Prod migration 不可逆風險</strong> — 見第 10 節紅線。</li>
-      <li><strong>目前未完成 / 技術債</strong> — <span class="todo">🔲 待補（口述）</span></li>
-      <li><strong>監控 / 告警現況</strong> — 目前有沒有「SSO 掛了會通知人」的機制？<span class="todo">🔲 待補</span></li>
-      <li><strong>備份</strong> — Postgres 多久備份一次、備份在哪、怎麼還原？<span class="todo">🔲 待補</span></li>
-    </ul>
-  </section>
-
-  <!-- ============ 13 ============ -->
-  <section id="s13">
-    <h2 class="sec">13. 延伸閱讀</h2>
-    <table>
-      <thead><tr><th>想了解</th><th>看這份</th></tr></thead>
-      <tbody>
-        <tr><td>系統怎麼設計、完整流程、資料表、安全機制、所有限制</td><td>docs/Design.md</td></tr>
-        <tr><td>我是 Client App 工程師，要怎麼接 SSO</td><td>INTEGRATION.md</td></tr>
-        <tr><td>開發慣例、不要踩的雷、常用指令</td><td>CLAUDE.md</td></tr>
-        <tr><td>系統總覽 / 環境 / API 端點速查</td><td>README.md</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <footer>
-    本手冊由程式碼與現有設計文件整理而成；標 🔲 的營運資訊需由前手口述補上。<br>
-    交接時請更新此日期 ── 最後更新：2026-06-22
-  </footer>
-
-</div>
-
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'default',
-    securityLevel: 'loose',
-    fontFamily: '"Microsoft JhengHei", "PingFang TC", "Segoe UI", system-ui, sans-serif',
-    sequence: { useMaxWidth: true, mirrorActors: false, wrap: true },
-    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
-  });
-</script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose',
+      fontFamily: '"Microsoft JhengHei", "PingFang TC", "Segoe UI", system-ui, sans-serif',
+      sequence: { useMaxWidth: true, mirrorActors: false, wrap: true },
+      flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' }
+    });
+  </script>
 </body>
 </html>
