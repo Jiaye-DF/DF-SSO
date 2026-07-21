@@ -1,0 +1,50 @@
+# Auto-CI-CD caller 模板 — 由 user-template skill 依專案技術棧客製後寫進 .github/workflows/ci-cd.yml
+#
+# 客製點(見 SKILL.md 步驟 3):
+#   - backend-ci 的 uses: 依後端棧改 ci-backend-python / ci-backend-node / ci-backend-java
+#   - backend-ci 的 with.migration_tool 依專案 migration 套件填(見 SKILL.md 步驟 2.5)
+#   - 無獨立前端(Jinja2 等 server-rendered):刪掉 frontend-ci job、
+#     auto-cicd 的 needs 改 [backend-ci]、移除 with.frontend_result 那行
+#   - @v1.0.0 換成中央 repo 目前最新的 fixed SemVer tag(或 40-char SHA);禁用 @v1 floating tag(見 Github-CI/RELEASE.md)
+name: ci-cd
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]    # merge 後再跑一次確認
+
+concurrency:
+  group: ci-cd-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── 步驟③ 前端 CI(無獨立前端的專案刪掉整個 frontend-ci job) ──
+  frontend-ci:
+    uses: Dafon-IT/DF-AI-Spec/.github/workflows/ci-frontend-node.yml@v1.0.0
+
+  # ── 步驟③ 後端 CI(三選一:python / node / java) ──
+  # migration_tool 允許值見各 reusable:
+  #   python:  alembic / aerich / django / none
+  #   node:    prisma / typeorm / knex / none
+  #   java:    flyway / liquibase / none
+  backend-ci:
+    uses: Dafon-IT/DF-AI-Spec/.github/workflows/ci-backend-python.yml@v1.0.0
+    with:
+      migration_tool: alembic
+
+  # ── 步驟④~⑦ 後續流程(固定,與技術棧無關) ──
+  auto-cicd:
+    needs: [frontend-ci, backend-ci]
+    if: always()
+    uses: Dafon-IT/DF-AI-Spec/.github/workflows/auto-cicd.yml@v1.0.0
+    with:
+      frontend_result: ${{ needs.frontend-ci.result }}
+      backend_result: ${{ needs.backend-ci.result }}
+    secrets: inherit
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      statuses: write
+      security-events: write

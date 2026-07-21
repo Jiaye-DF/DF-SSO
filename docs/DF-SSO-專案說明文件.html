@@ -32,7 +32,7 @@
     color: var(--text);
     background: var(--bg);
     line-height: 1.7;
-    font-size: 16px;
+    font-size: 18px;
   }
   code, pre, .mono { font-family: "Cascadia Code", "SFMono-Regular", Consolas, Menlo, monospace; }
 
@@ -43,24 +43,25 @@
     padding: 52px 24px 44px;
     text-align: center;
   }
-  header.hero .kicker { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; opacity: .85; font-weight: 600; }
-  header.hero h1 { margin: 10px 0 10px; font-size: 32px; line-height: 1.3; }
-  header.hero p.lead { margin: 0 auto; max-width: 720px; opacity: .92; font-size: 15.5px; }
+  header.hero .kicker { font-size: 16px; letter-spacing: .14em; text-transform: uppercase; opacity: .85; font-weight: 600; }
+  header.hero h1 { margin: 10px 0 10px; font-size: 36px; line-height: 1.3; }
+  header.hero p.lead { margin: 0 auto; max-width: 860px; opacity: .92; font-size: 18px; }
   .badge-row { margin-top: 18px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
   .hbadge {
     background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35);
-    padding: 4px 12px; border-radius: 999px; font-size: 13px; color: #fff;
+    padding: 5px 14px; border-radius: 999px; font-size: 16px; color: #fff;
   }
 
-  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px 80px; }
+  .wrap { max-width: none; margin: 0 auto; padding: 0 64px 80px; }
+  @media (max-width: 768px) { .wrap { padding: 0 20px 60px; } }
 
   /* 目錄 — 兩欄卡片式導覽 */
   nav.toc {
     background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
     padding: 24px 24px 26px; margin: 30px 0; box-shadow: 0 1px 3px rgba(0,0,0,.05);
   }
-  nav.toc .toc-title { font-size: 13px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; font-weight: 700; margin: 0 0 16px; }
-  .toc-section-label { font-size: 12px; font-weight: 800; color: var(--blue); letter-spacing: .04em; margin: 18px 0 10px; }
+  nav.toc .toc-title { font-size: 16px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; font-weight: 700; margin: 0 0 16px; }
+  .toc-section-label { font-size: 16px; font-weight: 800; color: var(--blue); letter-spacing: .04em; margin: 18px 0 10px; }
   .toc-section-label:first-of-type { margin-top: 4px; }
   .toc-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
   @media (min-width: 700px) { .toc-grid { grid-template-columns: 1fr 1fr; } }
@@ -71,50 +72,50 @@
   }
   a.toc-item:hover { border-color: var(--blue); box-shadow: 0 4px 14px rgba(37,99,235,.12); transform: translateY(-1px); }
   a.toc-item .n {
-    flex: none; width: 32px; height: 32px; border-radius: 9px; background: #eff6ff; color: var(--blue);
-    display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px;
+    flex: none; width: 36px; height: 36px; border-radius: 9px; background: #eff6ff; color: var(--blue);
+    display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 17px;
   }
   a.toc-item .tx { display: flex; flex-direction: column; }
-  a.toc-item .tx .tt { font-weight: 700; font-size: 15px; color: #0f172a; }
-  a.toc-item .tx .ds { color: var(--muted); font-size: 13px; margin-top: 3px; }
+  a.toc-item .tx .tt { font-weight: 700; font-size: 18px; color: #0f172a; }
+  a.toc-item .tx .ds { color: var(--muted); font-size: 16px; margin-top: 3px; }
 
   /* 區塊卡片化 */
   section {
     background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
     padding: 6px 30px 28px; margin: 22px 0; box-shadow: 0 1px 3px rgba(0,0,0,.04); scroll-margin-top: 16px;
   }
-  h2.sec { font-size: 22px; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin: 26px 0 4px; display: flex; align-items: center; gap: 12px; }
-  h2.sec .num { flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--blue); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; }
+  h2.sec { font-size: 26px; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin: 26px 0 4px; display: flex; align-items: center; gap: 12px; }
+  h2.sec .num { flex: none; width: 38px; height: 38px; border-radius: 10px; background: var(--blue); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; }
   p.sectlead { color: var(--muted); margin: 14px 0 18px; }
-  h3 { font-size: 17px; margin: 28px 0 12px; color: #111827; }
-  h4 { font-size: 15px; margin: 18px 0 8px; color: #111827; }
+  h3 { font-size: 21px; margin: 28px 0 12px; color: #111827; }
+  h4 { font-size: 18px; margin: 18px 0 8px; color: #111827; }
   p, ul, ol { margin: 0 0 12px; }
   p:last-child, ul:last-child, ol:last-child { margin-bottom: 0; }
   ul { padding-left: 22px; }
   li { margin: 5px 0; }
   strong { font-weight: 700; color: #0f172a; }
   .muted { color: var(--muted); }
-  .small { font-size: 13.5px; }
+  .small { font-size: 16px; }
   /* 文字重點層級 */
   .hl { color: var(--blue-dark); font-weight: 700; }
   .mk { background: linear-gradient(transparent 58%, #bfdbfe 58%); font-weight: 700; padding: 0 1px; }
-  .em { font-size: 17px; font-weight: 700; color: #0f172a; }
+  .em { font-size: 20px; font-weight: 700; color: #0f172a; }
   .key { color: var(--amber); font-weight: 700; }
   .rd { color: var(--red); font-weight: 700; }
-  .lead-line { font-size: 16.5px; }
+  .lead-line { font-size: 19px; }
 
   /* 成效指標卡 */
   .metrics { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
   @media (min-width: 760px) { .metrics { grid-template-columns: repeat(4, 1fr); } }
   .metric { border: 1px solid var(--border); border-radius: 14px; padding: 18px 16px; text-align: center; background: linear-gradient(180deg, #f8fbff, #ffffff); }
-  .metric .big { font-size: 28px; font-weight: 800; color: var(--blue-dark); line-height: 1.2; }
-  .metric .big small { font-size: 15px; font-weight: 700; }
-  .metric .ml { font-weight: 700; font-size: 14px; margin-top: 6px; }
-  .metric .ms { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
-  code { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; font-size: 13.5px; }
+  .metric .big { font-size: 32px; font-weight: 800; color: var(--blue-dark); line-height: 1.2; }
+  .metric .big small { font-size: 18px; font-weight: 700; }
+  .metric .ml { font-weight: 700; font-size: 17px; margin-top: 6px; }
+  .metric .ms { color: var(--muted); font-size: 16px; margin-top: 4px; }
+  code { background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; font-size: 16px; }
 
   /* inline badge */
-  .badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 11px; font-size: 12.5px; font-weight: 700; background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe; }
+  .badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 12px; font-size: 16px; font-weight: 700; background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe; }
   .badge.green { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
   .badge.amber { background: var(--amber-bg); color: var(--amber); border-color: var(--amber-border); }
   .badge.red { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
@@ -124,16 +125,16 @@
   .grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
   @media (min-width: 720px) { .grid.cols2 { grid-template-columns: repeat(2, 1fr); } .grid.cols3 { grid-template-columns: repeat(3, 1fr); } }
   .subcard { border: 1px solid var(--border); border-radius: 12px; padding: 18px; background: var(--surface); }
-  .subcard h4 { margin: 0 0 8px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
-  .subcard .ico { width: 28px; height: 28px; flex: none; border-radius: 8px; background: #eff6ff; color: var(--blue); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; }
-  .subcard p { margin: 0; font-size: 14px; color: var(--muted); }
+  .subcard h4 { margin: 0 0 8px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+  .subcard .ico { width: 32px; height: 32px; flex: none; border-radius: 8px; background: #eff6ff; color: var(--blue); display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; }
+  .subcard p { margin: 0; font-size: 16px; color: var(--muted); }
   .subcard ul { margin: 0; padding-left: 18px; }
-  .subcard li { font-size: 13.5px; }
-  .subcard .label { color: var(--muted); font-size: 12.5px; margin: 8px 0 6px; font-weight: 600; }
+  .subcard li { font-size: 16px; }
+  .subcard .label { color: var(--muted); font-size: 16px; margin: 8px 0 6px; font-weight: 600; }
 
   /* 表格 */
   .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; margin: 6px 0; }
-  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  table { border-collapse: collapse; width: 100%; font-size: 16px; }
   th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
   thead th { background: var(--code-bg); color: var(--muted); font-weight: 700; white-space: nowrap; }
   tbody tr:nth-child(even) { background: #fafbfc; }
@@ -142,12 +143,12 @@
 
   /* code block */
   .codeblock { border: 1px solid var(--border); border-radius: 12px; background: #0f172a; overflow: hidden; margin: 6px 0; }
-  .codeblock .lang { padding: 7px 14px; font-size: 12.5px; color: #94a3b8; border-bottom: 1px solid #1e293b; }
+  .codeblock .lang { padding: 7px 14px; font-size: 16px; color: #94a3b8; border-bottom: 1px solid #1e293b; }
   .codeblock pre { margin: 0; padding: 14px; overflow-x: auto; }
-  .codeblock pre code { font-size: 13px; line-height: 1.6; white-space: pre; color: #e2e8f0; background: none; border: none; padding: 0; }
+  .codeblock pre code { font-size: 16px; line-height: 1.6; white-space: pre; color: #e2e8f0; background: none; border: none; padding: 0; }
 
   /* note 提示框 */
-  .note { border-left: 4px solid; padding: 14px 18px; border-radius: 0 10px 10px 0; margin: 16px 0; font-size: 14.5px; }
+  .note { border-left: 4px solid; padding: 14px 18px; border-radius: 0 10px 10px 0; margin: 16px 0; font-size: 17px; }
   .note.info { background: #eff6ff; border-color: var(--blue); }
   .note.tip { background: var(--green-bg); border-color: var(--green); }
   .note.warn { background: var(--amber-bg); border-color: var(--amber); }
@@ -157,19 +158,25 @@
   /* 分層架構 */
   .layer { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
   .layer + .layer { margin-top: 14px; }
-  .layer .lh { background: var(--code-bg); padding: 10px 16px; font-weight: 700; font-size: 13.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .layer .lh { background: var(--code-bg); padding: 10px 16px; font-weight: 700; font-size: 16px; color: var(--muted); border-bottom: 1px solid var(--border); }
   .layer .lb { padding: 16px; display: flex; flex-wrap: wrap; gap: 10px; }
-  .chip { border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 13px; background: var(--surface); }
+  .chip { border: 1px solid var(--border); border-radius: 999px; padding: 6px 16px; font-size: 16px; background: var(--surface); }
   .chip b { font-weight: 700; }
+  .chip.main { background: #eff6ff; border-color: #93c5fd; color: var(--blue-dark); }
+  .chip.main b, .chip.main code { color: var(--blue-dark); }
+  .chip.main code { background: #dbeafe; border-color: #bfdbfe; }
+  .legend-dot { display: inline-block; width: 12px; height: 12px; border-radius: 4px; vertical-align: -1px; margin-right: 5px; }
+  .legend-dot.blue { background: #eff6ff; border: 1px solid #93c5fd; }
+  .legend-dot.gray { background: var(--surface); border: 1px solid var(--border); }
 
   /* 步驟（編號方塊，沿用導覽數字晶片風格） */
   ol.steps { counter-reset: step; list-style: none; padding-left: 0; margin: 12px 0; }
-  ol.steps > li { position: relative; padding: 2px 0 2px 40px; margin: 9px 0; }
+  ol.steps > li { position: relative; padding: 2px 0 2px 44px; margin: 9px 0; }
   ol.steps > li::before {
     counter-increment: step; content: counter(step);
     position: absolute; left: 0; top: 1px;
-    width: 26px; height: 26px; background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe;
-    border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;
+    width: 30px; height: 30px; background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px;
   }
 
   /* Playbook 標頭 */
@@ -177,20 +184,20 @@
   .playbook-head h3 { margin: 0; }
 
   /* 待補標記 */
-  .todo { background: #fff7cc; border: 1px dashed #f0c000; color: #7a5c00; padding: 1px 8px; border-radius: 5px; font-weight: 600; font-size: 13px; }
+  .todo { background: #fff7cc; border: 1px dashed #f0c000; color: #7a5c00; padding: 1px 8px; border-radius: 5px; font-weight: 600; font-size: 16px; }
 
   /* Part 分隔 */
   .part-divider { margin: 36px 0 6px; padding: 16px 22px; border-radius: 16px; background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #fff; }
-  .part-divider .pk { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .8; font-weight: 600; }
-  .part-divider h2 { margin: 4px 0 2px; font-size: 22px; border: none; display: block; }
-  .part-divider p { margin: 0; font-size: 14px; opacity: .9; }
+  .part-divider .pk { font-size: 16px; letter-spacing: .14em; text-transform: uppercase; opacity: .8; font-weight: 600; }
+  .part-divider h2 { margin: 4px 0 2px; font-size: 26px; border: none; display: block; }
+  .part-divider p { margin: 0; font-size: 17px; opacity: .9; }
 
   /* 流程圖（Mermaid，保留不變的 §7.1.1） */
   figure.diagram { margin: 10px 0 4px; }
-  pre.mermaid { background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; overflow-x: auto; font-size: 13px; line-height: 1.5; }
-  figure.diagram figcaption { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+  pre.mermaid { background: #fff; color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; overflow-x: auto; font-size: 16px; line-height: 1.5; }
+  figure.diagram figcaption { text-align: center; color: var(--muted); font-size: 16px; margin-top: 8px; }
 
-  footer.page { text-align: center; color: var(--muted); font-size: 13px; padding: 8px 24px 0; }
+  footer.page { text-align: center; color: var(--muted); font-size: 16px; padding: 8px 24px 0; }
 
   @media print {
     body { background: #fff; font-size: 12px; }
@@ -207,7 +214,7 @@
   <header class="hero">
     <div class="kicker">企業內部平台 · 專案說明文件</div>
     <h1>DF-SSO 企業統一登入系統<br>OAuth2 SSO Authorization Server</h1>
-    <p class="lead">大豐環保企業統一登入（Single Sign-On）中央系統：所有內部系統共用同一組 Microsoft（Azure AD）公司帳號，登入一次通行所有已接入系統。後端以 OAuth2 收斂身分驗證、session 治理、跨 App 自動登入與安全限流。本文件涵蓋系統摘要、架構、登入流程、技術亮點與維運操作手冊。</p>
+    <p class="lead">大豐環保企業統一登入（Single Sign-On）中央系統：所有內部系統共用同一組 Microsoft（Azure AD）公司帳號，登入一次通行所有已接入系統。本文件分兩部分 —— Part I 說明商業價值與解決的問題；Part II 為技術設計與維運操作手冊。</p>
     <div class="badge-row">
       <span class="hbadge">Express · Node.js</span>
       <span class="hbadge">Next.js · TypeScript</span>
@@ -223,16 +230,16 @@
     <!-- 目錄 -->
     <nav class="toc">
       <p class="toc-title">內容導覽</p>
-      <div class="toc-section-label">PART I · 系統與技術設計</div>
+      <div class="toc-section-label">PART I · 經營層摘要：商業價值與解決的問題</div>
       <div class="toc-grid">
         <a class="toc-item" href="#summary"><span class="n">1</span><span class="tx"><span class="tt">專案摘要</span><span class="ds">一句話定位與三大能力</span></span></a>
-        <a class="toc-item" href="#problem"><span class="n">2</span><span class="tx"><span class="tt">解決的問題與效益</span><span class="ds">痛點對照 + 量化成效</span></span></a>
+        <a class="toc-item" href="#problem"><span class="n">2</span><span class="tx"><span class="tt">解決的問題與商業價值</span><span class="ds">登入 / 權限亂象 → 統一治理</span></span></a>
+      </div>
+      <div class="toc-section-label">PART II · 技術設計與維運操作手冊</div>
+      <div class="toc-grid">
         <a class="toc-item" href="#arch"><span class="n">3</span><span class="tx"><span class="tt">系統架構</span><span class="ds">四層分層與技術棧</span></span></a>
         <a class="toc-item" href="#flow"><span class="n">4</span><span class="tx"><span class="tt">SSO 完整 OAuth2 登入流程</span><span class="ds">§7.1.1 Authorization Code Flow</span></span></a>
         <a class="toc-item" href="#highlights"><span class="n">5</span><span class="tx"><span class="tt">技術亮點與工程決策</span><span class="ds">安全原語 · 單一事實來源</span></span></a>
-      </div>
-      <div class="toc-section-label">PART II · 維運操作手冊</div>
-      <div class="toc-grid">
         <a class="toc-item" href="#env"><span class="n">6</span><span class="tx"><span class="tt">線上環境一覽</span><span class="ds">Prod / Test / Dev 網址</span></span></a>
         <a class="toc-item" href="#login"><span class="n">7</span><span class="tx"><span class="tt">第一次接手：登入後台</span><span class="ds">三層管理員驗證</span></span></a>
         <a class="toc-item" href="#tabs"><span class="n">8</span><span class="tx"><span class="tt">後台四個分頁導覽</span><span class="ds">白名單 / 紀錄 / 管理員 / 設定</span></span></a>
@@ -246,22 +253,22 @@
     </nav>
 
     <div class="note tip">
-      <div class="head">這份文件的兩個用途</div>
-      ① 讓接手的人不用讀完所有程式碼，就能處理日常 SSO 維運需求；② 完整呈現本系統的架構與工程設計。標記 <span class="todo">🔲 待補（口述）</span> 的地方是程式碼裡看不到、需要前手補充的資訊（帳號、位置、聯絡人等），請交接時口頭補上。
+      <div class="head">這份文件的兩個部分</div>
+      <strong>Part I</strong>：不需技術背景，說明這套系統解決什麼問題、帶來什麼商業價值；<strong>Part II</strong>：架構與工程設計，加上不用讀完程式碼就能照做的日常維運手冊。標記 <span class="todo">🔲 待補（口述）</span> 的地方是程式碼裡看不到、需要前手補充的資訊（帳號、位置、聯絡人等），請交接時口頭補上。
     </div>
 
     <!-- ============================ PART I ============================ -->
     <div class="part-divider">
       <div class="pk">Part I</div>
-      <h2>系統與技術設計</h2>
-      <p>這個系統解決什麼問題、長什麼樣子、登入怎麼跑、做了哪些工程決策。</p>
+      <h2>商業價值與解決的問題</h2>
+      <p>DF-SSO 為公司解決什麼問題、帶來什麼價值 —— 不需技術背景即可閱讀。</p>
     </div>
 
     <!-- 1 專案摘要 -->
     <section id="summary">
       <h2 class="sec"><span class="num">1</span>專案摘要</h2>
-      <p class="sectlead lead-line">把「<span class="rd">每套系統各做一份登入、各記一組密碼</span>」變成「<span class="mk">用同一組公司帳號登入一次、到處通用、全程可稽核</span>」的中央 SSO。</p>
-      <p>DF-SSO 是獨立的 <span class="hl">OAuth2 Authorization Server</span>：所有接入應用（Client App）只跟「中央」對話、不直接碰 Microsoft；使用者用 <span class="hl">同一組 Microsoft（Azure AD）公司帳號</span>登入，中央以 Redis session 治理登入狀態，並向 ERP 補員工資料。新系統接入只需向中央申請一組憑證（<code>app_id</code> / <code>app_secret</code>），照整合文件接四個端點即可。</p>
+      <p class="sectlead lead-line">把「<span class="rd">每套系統各做一份登入、各記一組密碼</span>」變成「<span class="mk">用同一組公司帳號登入一次、到處通用、全程可稽核</span>」的企業統一登入中心。</p>
+      <p>DF-SSO 是大豐環保的<span class="hl">企業統一登入中心</span>：全公司內部系統的登入一律收斂到這個中央系統，員工只用 <span class="hl">同一組 Microsoft（Azure AD）公司帳號</span>登入 —— 帳號開通、停用、密碼與多因素驗證（MFA）全部沿用公司既有的帳號管理，並自動帶入 ERP 的員編 / 部門等員工資料。任何新系統要提供登入，<span class="hl">不必自己開發</span>，向中央申請一組憑證、照整合文件接上即可。</p>
       <div class="grid cols3" style="margin-top:18px;">
         <div class="subcard">
           <h4><span class="ico">一</span>一次登入、到處通用</h4>
@@ -279,98 +286,108 @@
 
       <div class="metrics" style="margin-top:18px;">
         <div class="metric">
-          <div class="big">4 <small>端點</small></div>
-          <div class="ml">接入只需接</div>
-          <div class="ms">callback / me / logout / back-channel</div>
+          <div class="big">1 <small>組帳號</small></div>
+          <div class="ml">通行所有內部系統</div>
+          <div class="ms">員工不用再記多組帳密</div>
         </div>
         <div class="metric">
-          <div class="big">24 <small>h</small></div>
-          <div class="ml">中央 session</div>
-          <div class="ms">登入狀態唯一事實來源</div>
+          <div class="big">1 <small>次登入</small></div>
+          <div class="ml">跨系統免重登</div>
+          <div class="ms">切換系統不必重複登入</div>
         </div>
         <div class="metric">
-          <div class="big">5 <small>處</small></div>
-          <div class="ml">一張白名單驅動</div>
-          <div class="ms">授權 / 換 token / CORS / 登出 / redirect</div>
+          <div class="big">100<small>%</small></div>
+          <div class="ml">登入可稽核</div>
+          <div class="ms">每筆登入集中留下紀錄</div>
         </div>
         <div class="metric">
-          <div class="big">2 <small>套</small></div>
-          <div class="ml">Prod / Test 隔離</div>
-          <div class="ms">DB / Redis volume 完全不共用</div>
+          <div class="big">即時</div>
+          <div class="ml">離職全面撤權</div>
+          <div class="ms">公司帳號停用＝所有系統進不去</div>
         </div>
       </div>
 
-      <div class="note warn">
-        <div class="head">接手者最該先知道的三件事</div>
-        ① Azure AD 的 client secret <span class="rd">會過期，過期將導致全公司登入中斷</span> —— 務必先確認到期日與負責續期的人；② <span class="rd">Prod 的資料庫操作不可逆</span>，誤跑會資料全毀（見第 11 節紅線）；③ 其餘風險與待補的營運資訊見「已知風險與待辦」一節。
-      </div>
     </section>
 
-    <!-- 2 解決的問題與效益 -->
+    <!-- 2 解決的問題與商業價值 -->
     <section id="problem">
-      <h2 class="sec"><span class="num">2</span>解決的問題與效益</h2>
-      <p class="sectlead">企業缺乏統一登入時的四大實際痛點，以及 DF-SSO 如何對應、帶來什麼效益。</p>
+      <h2 class="sec"><span class="num">2</span>解決的問題與商業價值</h2>
+      <p class="sectlead lead-line">AI 輔助開發（Vibe Coding）讓公司內部系統<span class="hl">快速增加</span>，但每套系統的<span class="rd">登入與權限管理各做各的、標準不一</span> —— 已經出現「<span class="rd">不該看的人看到了、該看的人反而看不到</span>」的權限失控，員工帳密散落各系統也是持續累積的資安風險。DF-SSO 把「<span class="mk">誰能登入、看得到什麼、誰在使用</span>」收斂回公司統一控管。</p>
+
+      <h3>沒有統一登入前，公司實際承受的問題</h3>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th style="width:38%">實際痛點 / 風險</th><th>DF-SSO 的解法</th></tr>
+            <tr><th style="width:40%">問題 / 風險</th><th>DF-SSO 的解法</th></tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>每套系統各做登入、各記密碼</strong><br><span class="muted small">員工要記多組帳密、IT <span class="rd">重複維護多套登入機制</span></span></td>
-              <td>登入集中到單一中央；員工<span class="hl">用同一組 Microsoft 公司帳號登入一次</span>，通行所有已接入系統。</td>
+              <td><strong>系統快速增生，登入各做各的</strong><br><span class="muted small">Vibe Coding 產出快，但每套系統自建登入，<span class="rd">安全品質參差、無人統一把關</span></span></td>
+              <td>登入一律交給中央，各系統<span class="hl">不再自建帳密機制</span>；哪些系統可以接入，由中央白名單<span class="hl">統一審核控管</span>。</td>
             </tr>
             <tr>
-              <td><strong>帳號分散、離職難全面撤權</strong><br><span class="muted small"><span class="rd">每套系統各開各關帳號，易有漏網的殭屍帳號</span></span></td>
-              <td>直接沿用 Azure AD，到職 / 離職由 <span class="hl">AD 統一控管</span>；中央 Redis session 為登入狀態唯一事實來源，停用即刻失效。</td>
+              <td><strong>權限失控：不該看的看到了、該看的看不到</strong><br><span class="muted small">各系統各自認人，<span class="rd">身分資料零散不一致，權限無從正確設定</span></span></td>
+              <td>中央提供<span class="hl">可信的統一身分</span>（姓名 / email / 員編 / 部門），各系統以同一份身分資料設定權限 —— 身分只有一個版本，權限才管得對。</td>
             </tr>
             <tr>
-              <td><strong>安全與稽核各自為政</strong><br><span class="muted small"><span class="rd">登入紀錄、授權範圍、限流散落各系統，難統一控管</span></span></td>
-              <td>登入紀錄、OAuth 授權、Rate Limit、CORS 全部<span class="hl">集中中央一處</span>管理，並寫入 <code>sso_login_log</code>。</td>
+              <td><strong>員工帳密散落各系統，資安風險累積</strong><br><span class="muted small"><span class="rd">多組帳密助長弱密碼、重複使用，任一系統外洩即擴散</span></span></td>
+              <td>員工只用<span class="hl">一組 Microsoft 公司帳號 + 多因素驗證（MFA）</span>登入；各系統本身<span class="hl">不儲存任何密碼</span>，沒有可被偷的帳密。</td>
             </tr>
             <tr>
-              <td><strong>新系統要自己重做登入</strong><br><span class="muted small"><span class="rd">每接一個系統都重造登入輪子，曠日廢時且品質參差</span></span></td>
-              <td>申請一組 <code>app_id</code> / <code>app_secret</code>，照 INTEGRATION.md <span class="hl">接四個端點</span>即可，不必自行實作 OAuth 與安全機制。</td>
+              <td><strong>離職 / 調動撤權有漏洞</strong><br><span class="muted small"><span class="rd">每套系統各開各關帳號，容易留下漏網的殭屍帳號</span></span></td>
+              <td>帳號由公司 AD 統一控管 —— <span class="hl">停用一個帳號＝所有系統即刻進不去</span>，不必逐套系統清查。</td>
+            </tr>
+            <tr>
+              <td><strong>出了事無法追查</strong><br><span class="muted small"><span class="rd">登入紀錄分散在各系統、甚至根本沒有留</span></span></td>
+              <td>全公司登入<span class="hl">集中留下紀錄</span>：誰、何時、從哪個 IP、登入哪個系統、成功或失敗，後台隨時可查。</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <h3>量化效益</h3>
-      <div class="metrics">
-        <div class="metric">
-          <div class="big">1 <small>組帳號</small></div>
-          <div class="ml">通行所有系統</div>
-          <div class="ms"><span class="muted">各記多組密碼 →</span> 單一 Azure AD 帳號</div>
+      <h3>商業價值</h3>
+      <div class="grid cols2">
+        <div class="subcard">
+          <h4><span class="ico">安</span>資安風險收斂</h4>
+          <p>登入統一走 Microsoft 公司帳號 + MFA，密碼<span class="hl">只存在一處</span>；接入資格由中央審核，<span class="hl">杜絕各系統自建登入的安全落差</span>。</p>
         </div>
-        <div class="metric">
-          <div class="big">4 <small>端點</small></div>
-          <div class="ml">接入成本</div>
-          <div class="ms">不必自行重做登入</div>
+        <div class="subcard">
+          <h4><span class="ico">權</span>權限治理有依據</h4>
+          <p>所有系統基於<span class="hl">同一份可信身分（員編 / 部門）</span>設定權限，解決「不該看的看到、該看的看不到」—— 權限對得上組織的實際樣貌。</p>
         </div>
-        <div class="metric">
-          <div class="big">100<small>%</small></div>
-          <div class="ml">登入可稽核</div>
-          <div class="ms">每筆寫入中央登入紀錄</div>
+        <div class="subcard">
+          <h4><span class="ico">速</span>系統上線更快、成本更低</h4>
+          <p>新系統（含 Vibe Coding 快速產出的工具）<span class="hl">不必重做登入</span>，申請憑證即接即用 —— 保住開發速度，同時不犧牲安全。</p>
         </div>
-        <div class="metric">
-          <div class="big">即時</div>
-          <div class="ml">離職 / 停用撤權</div>
-          <div class="ms">清中央 session 即全失效</div>
+        <div class="subcard">
+          <h4><span class="ico">稽</span>可稽核、可問責</h4>
+          <p>登入行為 <span class="hl">100% 集中留痕</span>，出事可追查；離職 / 停權<span class="hl">即時全面生效</span>，符合稽核與內控要求。</p>
         </div>
       </div>
     </section>
 
+    <!-- ============================ PART II ============================ -->
+    <div class="part-divider">
+      <div class="pk">Part II</div>
+      <h2>技術設計與維運操作手冊</h2>
+      <p>系統長什麼樣子、登入怎麼跑、做了哪些工程決策；後半段以「有人來找你說 ___，你該怎麼做」的情境為主，照著點即可。</p>
+    </div>
+
+    <div class="note warn">
+      <div class="head">接手者最該先知道的三件事</div>
+      ① Azure AD 的 client secret <span class="rd">會過期，過期將導致全公司登入中斷</span> —— 務必先確認到期日與負責續期的人；② <span class="rd">Prod 的資料庫操作不可逆</span>，誤跑會資料全毀（見第 11 節紅線）；③ 其餘風險與待補的營運資訊見「已知風險與待辦」一節。
+    </div>
+
     <!-- 3 系統架構 -->
     <section id="arch">
       <h2 class="sec"><span class="num">3</span>系統架構</h2>
-      <p class="sectlead">Monorepo 前後端分離，以 Docker Compose 編排，Coolify 部署；Prod 與 Test 為兩套獨立 stack。</p>
+      <p class="sectlead">Monorepo 前後端分離，以 Docker Compose 編排，Coolify 部署；Prod 與 Test 為兩套獨立 stack。<br><span class="small"><span class="legend-dot blue"></span>藍色＝主要技術　<span class="legend-dot gray"></span>灰白＝功能 / 特性</span></p>
 
       <div class="layer">
         <div class="lh">前端層 · Frontend</div>
         <div class="lb">
-          <span class="chip"><b>Next.js</b> App Router</span>
-          <span class="chip"><b>TypeScript</b></span>
+          <span class="chip main"><b>Next.js</b> App Router</span>
+          <span class="chip main"><b>TypeScript</b></span>
           <span class="chip">單頁 Tab Dashboard</span>
           <span class="chip">cookie-based（<code>credentials: include</code>）</span>
           <span class="chip">管理 UI · 登入紀錄 · 設定</span>
@@ -380,11 +397,11 @@
       <div class="layer">
         <div class="lh">後端層 · Backend（Authorization Server）</div>
         <div class="lb">
-          <span class="chip"><b>Express</b> · Node.js</span>
-          <span class="chip"><b>OAuth2</b> Authorization Code Flow</span>
-          <span class="chip"><b>JWT</b>（HS256）+ Redis Session</span>
+          <span class="chip main"><b>Express</b> · Node.js</span>
+          <span class="chip main"><b>OAuth2</b> Authorization Code Flow</span>
+          <span class="chip main"><b>JWT</b>（HS256）+ Redis Session</span>
           <span class="chip"><b>adminAuth</b> 三層驗證</span>
-          <span class="chip"><b>node-pg-migrate</b> 雙目錄</span>
+          <span class="chip main"><b>node-pg-migrate</b> 雙目錄</span>
           <span class="chip">Helmet · CORS 動態白名單 · Rate Limit</span>
         </div>
       </div>
@@ -392,9 +409,9 @@
       <div class="layer">
         <div class="lh">資料與基礎設施 · Data &amp; Infra</div>
         <div class="lb">
-          <span class="chip"><b>PostgreSQL</b>（白名單 / 登入紀錄 / 管理員）</span>
-          <span class="chip"><b>Redis</b>（24h session · 一次性 auth code）</span>
-          <span class="chip"><b>Docker Compose</b> · Coolify</span>
+          <span class="chip main"><b>PostgreSQL</b>（白名單 / 登入紀錄 / 管理員）</span>
+          <span class="chip main"><b>Redis</b>（24h session · 一次性 auth code）</span>
+          <span class="chip main"><b>Docker Compose</b> · Coolify</span>
           <span class="chip">Prod / Test 雙獨立 stack（<code>sso-prod-*</code> / <code>sso-test-*</code>）</span>
         </div>
       </div>
@@ -402,8 +419,8 @@
       <div class="layer">
         <div class="lh">外部整合 · External</div>
         <div class="lb">
-          <span class="chip"><b>Microsoft Azure AD</b>（MSAL · 帳號 + MFA）</span>
-          <span class="chip"><b>ERP API</b>（員工資料：員編 / 部門）</span>
+          <span class="chip main"><b>Microsoft Azure AD</b>（MSAL · 帳號 + MFA）</span>
+          <span class="chip main"><b>ERP API</b>（員工資料：員編 / 部門）</span>
           <span class="chip">接入應用 Client Apps（CRM 等）</span>
         </div>
       </div>
@@ -529,13 +546,6 @@ sequenceDiagram
         DF-SSO 是一個把<span class="mk">身分驗證、session 治理、跨 App 自動登入、安全限流</span>收斂到單一中央、並以 <span class="hl">最小信任邊界 + 單一事實來源</span> 為設計主軸的 OAuth2 Authorization Server。
       </div>
     </section>
-
-    <!-- ============================ PART II ============================ -->
-    <div class="part-divider">
-      <div class="pk">Part II</div>
-      <h2>維運操作手冊</h2>
-      <p>以「有人來找你說 ___，你該怎麼做」的情境為主，照著點即可。</p>
-    </div>
 
     <!-- 5 線上環境 -->
     <section id="env">
@@ -810,7 +820,7 @@ https://crm.df-recycle.com.tw</code></pre></div>
     </section>
 
     <footer class="page">
-      本手冊由程式碼與現有設計文件整理而成；標 🔲 的營運資訊需由前手口述補上。交接時請更新此日期 ── 最後更新：2026-06-22
+      本手冊由程式碼與現有設計文件整理而成；標 🔲 的營運資訊需由前手口述補上。交接時請更新此日期 ── 最後更新：2026-07-21
     </footer>
 
   </div>

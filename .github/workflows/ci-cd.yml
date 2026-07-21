@@ -1,0 +1,40 @@
+name: ci-cd
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]    # merge 後再跑一次確認
+
+concurrency:
+  group: ci-cd-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── 步驟③ 前端 CI ──
+  frontend-ci:
+    uses: Dafon-IT/DF-AI-Spec/.github/workflows/ci-frontend-node.yml@v1.0.0
+
+  # ── 步驟③ 後端 CI(Node.js / Express) ──
+  # migration_tool 允許值:prisma / typeorm / knex / none
+  # 本專案用 node-pg-migrate(不在中央支援清單)→ none,不跑 migration round-trip
+  backend-ci:
+    uses: Dafon-IT/DF-AI-Spec/.github/workflows/ci-backend-node.yml@v1.0.0
+    with:
+      migration_tool: none
+
+  # ── 步驟④~⑦ 後續流程(固定,與技術棧無關) ──
+  auto-cicd:
+    needs: [frontend-ci, backend-ci]
+    if: always()
+    uses: Dafon-IT/DF-AI-Spec/.github/workflows/auto-cicd.yml@v1.0.0
+    with:
+      frontend_result: ${{ needs.frontend-ci.result }}
+      backend_result: ${{ needs.backend-ci.result }}
+    secrets: inherit
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      statuses: write
+      security-events: write

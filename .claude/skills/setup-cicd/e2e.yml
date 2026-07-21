@@ -1,0 +1,14 @@
+# Auto-CI-CD E2E caller 模板 — 有獨立前端的專案才需要
+# 由 user-template skill 寫進 .github/workflows/e2e.yml(中央 repo / tag 一併替換)
+name: e2e
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    if: false   # 備妥 E2E 後改 true 啟用(啟用條件見 Harness 05-CI/06-e2e)
+    uses: Dafon-IT/DF-AI-Spec/.github/workflows/e2e.yml@v1.0.0
+    secrets: inherit

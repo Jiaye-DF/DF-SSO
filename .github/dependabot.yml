@@ -1,0 +1,7 @@
+version: 2
+updates:
+  # 中央 reusable workflow 發新 tag 時自動開 PR 升版
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
